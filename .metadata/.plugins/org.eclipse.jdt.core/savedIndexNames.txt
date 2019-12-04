@@ -1,0 +1,7 @@
+INDEX VERSION 1.131+C:\Users\User\Documents\school\Graphics\.metadata\.plugins\org.eclipse.jdt.core
+1425643853.index
+3494632151.index
+3154654995.index
+3437189622.index
+2168687353.index
+351752974.index
