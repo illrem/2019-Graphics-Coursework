@@ -105,26 +105,26 @@ public class ShapeDesigner extends AbstractDesigner {
             
             
             
-            // the vertices for the wing
+            // the vertices for the left wing
 
         	//the top face
             Vertex t1 = new Vertex( -0.5f,  0.5f,    0f);
             Vertex t2 = new Vertex( -0.5f,  0.5f,-0.75f);
-            Vertex t3 = new Vertex( -0.75f, 0.5f,-1.75f);
-            Vertex t4 = new Vertex(  0.25f, 0.5f,-1f   );
+            Vertex t3 = new Vertex( -0.6f,  0.5f,-1.75f);
+            Vertex t4 = new Vertex(  0.3f,  0.5f,-1f   );
             Vertex t5 = new Vertex(  0.5f,  0.5f, 0f   );
             
             //the bottom face
-            Vertex b1 = new Vertex( -0.5f,  0.3f,    0f);
-            Vertex b2 = new Vertex( -0.5f,  0.3f,-0.75f);
-            Vertex b3 = new Vertex( -0.75f, 0.3f,-1.75f);
-            Vertex b4 = new Vertex(  0.25f, 0.3f,-1f   );
-            Vertex b5 = new Vertex(  0.5f,  0.3f, 0f   );
+            Vertex b1 = new Vertex( -0.3f,  0.3f,    0f);
+            Vertex b2 = new Vertex( -0.3f,  0.3f, -0.9f);
+            Vertex b3 = new Vertex( -0.5f,  0.3f, -2.6f);
+            Vertex b4 = new Vertex(  0.5f,  0.3f, -1.8f);
+            Vertex b5 = new Vertex(  0.9f,  0.3f,  0.2f);
             
             // draw the top face:
             GL11.glBegin(GL11.GL_POLYGON);
             {
-                new Normal(t1.toVector(),t2.toVector(),t3.toVector(),t4.toVector()).submit();
+                new Normal(t1.toVector(),t2.toVector(),t3.toVector()).submit();
                 
                 t1.submit();
                 t2.submit();
@@ -147,89 +147,131 @@ public class ShapeDesigner extends AbstractDesigner {
     			
     		}
     		GL11.glEnd();
-    		//front side face
+    		//side1 face
     		GL11.glBegin(GL11.GL_POLYGON);
     		{
-    			new Normal(t1.toVector(),b1.toVector(),b2.toVector(),t2.toVector()).submit();
+    			new Normal(t1.toVector(),b1.toVector(),t2.toVector()).submit();
     			
     			t1.submit();
+    			b1.submit();
+    			t2.submit();
+    		}
+    		GL11.glEnd();
+    		//side 2 face
+    		GL11.glBegin(GL11.GL_POLYGON);
+    		{
+    			new Normal(b1.toVector(),b2.toVector(),t2.toVector()).submit();
+    			
     			b1.submit();
     			b2.submit();
     			t2.submit();
     		}
     		GL11.glEnd();
-    		
-    		//second front side face
+    		//side 3 face
     		GL11.glBegin(GL11.GL_POLYGON);
     		{
-    			new Normal(t2.toVector(),b2.toVector(),b3.toVector(),t3.toVector()).submit();
+    			new Normal(t2.toVector(),b2.toVector(),t3.toVector()).submit();
     			
     			t2.submit();
+    			b2.submit();
+    			t3.submit();
+    		}
+    		GL11.glEnd();
+    		//side 4 face
+    		GL11.glBegin(GL11.GL_POLYGON);
+    		{
+    			new Normal(b2.toVector(),b3.toVector(),t3.toVector()).submit();
+    			
     			b2.submit();
     			b3.submit();
     			t3.submit();
     		}
     		GL11.glEnd();
-    		
-    		//second rear side face
+    		//side 5 face
     		GL11.glBegin(GL11.GL_POLYGON);
     		{
-    			new Normal(t3.toVector(),b3.toVector(),b4.toVector(),t4.toVector()).submit();
+    			new Normal(t3.toVector(),b3.toVector(),t4.toVector()).submit();
     			
     			t3.submit();
+    			b3.submit();
+    			t4.submit();
+    		}
+    		GL11.glEnd();
+    		//side 6 face
+    		GL11.glBegin(GL11.GL_POLYGON);
+    		{
+    			new Normal(b3.toVector(),b4.toVector(),t4.toVector()).submit();
+    			
     			b3.submit();
     			b4.submit();
     			t4.submit();
     		}
     		GL11.glEnd();
-    		
-    		//rear side face
+    		//side 7 face
     		GL11.glBegin(GL11.GL_POLYGON);
     		{
-    			new Normal(t4.toVector(),b4.toVector(),b4.toVector(),t5.toVector()).submit();
+    			new Normal(t4.toVector(),b4.toVector(),b5.toVector()).submit();
     			
     			t4.submit();
     			b4.submit();
     			b5.submit();
+    		}
+    		GL11.glEnd();
+    		//side 8 face
+    		GL11.glBegin(GL11.GL_POLYGON);
+    		{
+    			new Normal(t4.toVector(),b5.toVector(),t5.toVector()).submit();
+    			
+    			t4.submit();
+    			b5.submit();
     			t5.submit();
     		}
     		GL11.glEnd();
-    		
-    		//wing cap-- should not be visible
+    		//side 9 face
     		GL11.glBegin(GL11.GL_POLYGON);
     		{
-    			new Normal(t5.toVector(),b5.toVector(),b1.toVector(),t1.toVector()).submit();
+    			new Normal(t5.toVector(),b5.toVector(),b1.toVector()).submit();
     			
     			t5.submit();
     			b5.submit();
     			b1.submit();
+    		}
+    		GL11.glEnd();
+    		//side 10 face
+    		GL11.glBegin(GL11.GL_POLYGON);
+    		{
+    			new Normal(t1.toVector(),b1.toVector(),t5.toVector()).submit();
+    			
     			t1.submit();
+    			b1.submit();
+    			t5.submit();
     		}
     		GL11.glEnd();
     		////////////////////////////////////////////////////////
     		//move to right wing
             GL11.glTranslatef(0,0, 1.4f);
-    		
-         // the vertices for the second wing
+
+            //GL11.glRotatef(10.0f, 0.0f, 1.0f, 0.0f);
+         // the vertices for the right wing
 
         	//the top face
             Vertex tl1 = new Vertex( -0.5f,  0.5f,    0f);
             Vertex tl2 = new Vertex( -0.5f,  0.5f, 0.75f);
-            Vertex tl3 = new Vertex( -0.75f, 0.5f, 1.75f);
-            Vertex tl4 = new Vertex(  0.25f, 0.5f, 1f   );
+            Vertex tl3 = new Vertex( -0.6f,  0.5f, 1.75f);
+            Vertex tl4 = new Vertex(  0.3f,  0.5f, 1f   );
             Vertex tl5 = new Vertex(  0.5f,  0.5f, 0f   );
             
             //the bottom face
-            Vertex bl1 = new Vertex( -0.5f,  0.3f,    0f);
-            Vertex bl2 = new Vertex( -0.5f,  0.3f, 0.75f);
-            Vertex bl3 = new Vertex( -0.75f, 0.3f, 1.75f);
-            Vertex bl4 = new Vertex(  0.25f, 0.3f, 1f   );
-            Vertex bl5 = new Vertex(  0.5f,  0.3f, 0f   );
+            Vertex bl1 = new Vertex( -0.3f,  0.3f,    0f);
+            Vertex bl2 = new Vertex( -0.3f,  0.3f,  0.9f);
+            Vertex bl3 = new Vertex( -0.5f,  0.3f,  2.6f);
+            Vertex bl4 = new Vertex(  0.5f,  0.3f,  1.8f);
+            Vertex bl5 = new Vertex(  0.9f,  0.3f,  0.2f);
             
             // draw the top face:
             GL11.glBegin(GL11.GL_POLYGON);
             {
-                new Normal(tl1.toVector(),tl2.toVector(),tl3.toVector(),tl4.toVector()).submit();
+                new Normal(tl1.toVector(),tl2.toVector(),tl3.toVector()).submit();
                 
                 tl1.submit();
                 tl2.submit();
@@ -252,66 +294,106 @@ public class ShapeDesigner extends AbstractDesigner {
     			
     		}
     		GL11.glEnd();
-    		//front side face
+    		//side1 face
     		GL11.glBegin(GL11.GL_POLYGON);
     		{
-    			new Normal(tl1.toVector(),bl1.toVector(),bl2.toVector(),tl2.toVector()).submit();
+    			new Normal(tl1.toVector(),bl1.toVector(),tl2.toVector()).submit();
     			
     			tl1.submit();
+    			bl1.submit();
+    			tl2.submit();
+    		}
+    		GL11.glEnd();
+    		//side 2 face
+    		GL11.glBegin(GL11.GL_POLYGON);
+    		{
+    			new Normal(bl1.toVector(),bl2.toVector(),tl2.toVector()).submit();
+    			
     			bl1.submit();
     			bl2.submit();
     			tl2.submit();
     		}
     		GL11.glEnd();
-    		
-    		//second front side face
+    		//side 3 face
     		GL11.glBegin(GL11.GL_POLYGON);
     		{
-    			new Normal(tl2.toVector(),bl2.toVector(),bl3.toVector(),tl3.toVector()).submit();
+    			new Normal(tl2.toVector(),bl2.toVector(),tl3.toVector()).submit();
     			
     			tl2.submit();
+    			bl2.submit();
+    			tl3.submit();
+    		}
+    		GL11.glEnd();
+    		//side 4 face
+    		GL11.glBegin(GL11.GL_POLYGON);
+    		{
+    			new Normal(bl2.toVector(),bl3.toVector(),tl3.toVector()).submit();
+    			
     			bl2.submit();
     			bl3.submit();
     			tl3.submit();
     		}
     		GL11.glEnd();
-    		
-    		//second rear side face
+    		//side 5 face
     		GL11.glBegin(GL11.GL_POLYGON);
     		{
-    			new Normal(tl3.toVector(),bl3.toVector(),bl4.toVector(),tl4.toVector()).submit();
+    			new Normal(tl3.toVector(),bl3.toVector(),tl4.toVector()).submit();
     			
     			tl3.submit();
+    			bl3.submit();
+    			tl4.submit();
+    		}
+    		GL11.glEnd();
+    		//side 6 face
+    		GL11.glBegin(GL11.GL_POLYGON);
+    		{
+    			new Normal(bl3.toVector(),bl4.toVector(),tl4.toVector()).submit();
+    			
     			bl3.submit();
     			bl4.submit();
     			tl4.submit();
     		}
     		GL11.glEnd();
-    		
-    		//rear side face
+    		//side 7 face
     		GL11.glBegin(GL11.GL_POLYGON);
     		{
-    			new Normal(tl4.toVector(),bl4.toVector(),bl4.toVector(),tl5.toVector()).submit();
+    			new Normal(tl4.toVector(),bl4.toVector(),bl5.toVector()).submit();
     			
     			tl4.submit();
     			bl4.submit();
     			bl5.submit();
+    		}
+    		GL11.glEnd();
+    		//side 8 face
+    		GL11.glBegin(GL11.GL_POLYGON);
+    		{
+    			new Normal(tl4.toVector(),bl5.toVector(),tl5.toVector()).submit();
+    			
+    			tl4.submit();
+    			bl5.submit();
     			tl5.submit();
     		}
     		GL11.glEnd();
-    		
-    		//wing cap-- should not be visible
+    		//side 9 face
     		GL11.glBegin(GL11.GL_POLYGON);
     		{
-    			new Normal(tl5.toVector(),bl5.toVector(),bl1.toVector(),tl1.toVector()).submit();
+    			new Normal(tl5.toVector(),bl5.toVector(),bl1.toVector()).submit();
     			
     			tl5.submit();
     			bl5.submit();
     			bl1.submit();
-    			tl1.submit();
     		}
     		GL11.glEnd();
-    		
+    		//side 10 face
+    		GL11.glBegin(GL11.GL_POLYGON);
+    		{
+    			new Normal(tl1.toVector(),bl1.toVector(),tl5.toVector()).submit();
+    			
+    			tl1.submit();
+    			bl1.submit();
+    			tl5.submit();
+    		}
+    		GL11.glEnd();
     		
     		
     		
