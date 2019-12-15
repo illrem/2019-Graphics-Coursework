@@ -35,6 +35,8 @@ public class ShapeDesigner extends AbstractDesigner {
 		new ShapeDesigner().run( WINDOWED, "Designer", 0.05f);
     }
 	
+	
+	
 	/** Draw the shape **/
     protected void drawUnitShape()
     {
@@ -48,8 +50,12 @@ public class ShapeDesigner extends AbstractDesigner {
         **/
     	
     	
+    	
+    	
         GL11.glPushMatrix();
         {
+        
+        	/**
         	
         	//make cone sideways
             GL11.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
@@ -111,15 +117,15 @@ public class ShapeDesigner extends AbstractDesigner {
             Vertex t1 = new Vertex( -0.5f,  0.5f,    0f);
             Vertex t2 = new Vertex( -0.5f,  0.5f,-0.75f);
             Vertex t3 = new Vertex( -0.6f,  0.5f,-1.75f);
-            Vertex t4 = new Vertex(  0.3f,  0.5f,-1f   );
-            Vertex t5 = new Vertex(  0.5f,  0.5f, 0f   );
+            Vertex t4 = new Vertex(  0.3f,  0.5f,   -1f);
+            Vertex t5 = new Vertex(  0.5f,  0.5f,    0f);
             
             //the bottom face
             Vertex b1 = new Vertex( -0.3f,  0.3f,    0f);
             Vertex b2 = new Vertex( -0.3f,  0.3f, -0.9f);
             Vertex b3 = new Vertex( -0.5f,  0.3f, -2.6f);
             Vertex b4 = new Vertex(  0.5f,  0.3f, -1.8f);
-            Vertex b5 = new Vertex(  0.9f,  0.3f,  0.2f);
+            Vertex b5 = new Vertex(  0.9f,  0.3f,    0f);
             
             // draw the top face:
             GL11.glBegin(GL11.GL_POLYGON);
@@ -258,15 +264,15 @@ public class ShapeDesigner extends AbstractDesigner {
             Vertex tl1 = new Vertex( -0.5f,  0.5f,    0f);
             Vertex tl2 = new Vertex( -0.5f,  0.5f, 0.75f);
             Vertex tl3 = new Vertex( -0.6f,  0.5f, 1.75f);
-            Vertex tl4 = new Vertex(  0.3f,  0.5f, 1f   );
-            Vertex tl5 = new Vertex(  0.5f,  0.5f, 0f   );
+            Vertex tl4 = new Vertex(  0.3f,  0.5f,    1f);
+            Vertex tl5 = new Vertex(  0.5f,  0.5f,    0f);
             
             //the bottom face
             Vertex bl1 = new Vertex( -0.3f,  0.3f,    0f);
             Vertex bl2 = new Vertex( -0.3f,  0.3f,  0.9f);
             Vertex bl3 = new Vertex( -0.5f,  0.3f,  2.6f);
             Vertex bl4 = new Vertex(  0.5f,  0.3f,  1.8f);
-            Vertex bl5 = new Vertex(  0.9f,  0.3f,  0.2f);
+            Vertex bl5 = new Vertex(  0.9f,  0.3f,    0f);
             
             // draw the top face:
             GL11.glBegin(GL11.GL_POLYGON);
@@ -394,7 +400,12 @@ public class ShapeDesigner extends AbstractDesigner {
     			tl5.submit();
     		}
     		GL11.glEnd();
-    		
+    		**/
+    	
+    	
+        	
+        	
+        	
     		
     		
         }
