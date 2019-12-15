@@ -224,7 +224,7 @@ public class Lab6 extends GraphicsLab
             GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SPECULAR, FloatBuffer.wrap(moonFrontSpecular));
             GL11.glMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE, FloatBuffer.wrap(moonFrontDiffuse));
 
-            // position and draw the moon using a sphere quadric object
+            // position and draw the moon using a sphere quadratic object
             GL11.glTranslatef(4.0f, currentSunMoonY, -19.0f);
             new Sphere().draw(0.5f,10,10);
         }
