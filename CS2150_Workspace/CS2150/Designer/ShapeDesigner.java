@@ -54,7 +54,7 @@ public class ShapeDesigner extends AbstractDesigner {
         	//make cone sideways
             GL11.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
             //draw cone/beak
-            new Cylinder().draw(0.25f, 0.0f, 1.5f, 10, 10);
+            new Cylinder().draw(0.25f, 0.0f, 0.75f, 10, 10);
             //move cylinder to back of cone
             GL11.glTranslatef(0,0, -0.5f);
             //draw cylinder
