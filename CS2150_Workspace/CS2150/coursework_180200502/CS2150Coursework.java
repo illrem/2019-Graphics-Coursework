@@ -184,10 +184,22 @@ GL11.glLoadIdentity();
             GL11.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
             //draw leg
             new Cylinder().draw(0.1f,0.1f, 0.75f, 10, 10);
+            //move to foot
+            GL11.glTranslatef(0.0f,0.0f, 0.75f);
+            //draw foot
+            new Sphere().draw(0.2f,10,10);
+            //go back to the top of the leg
+            GL11.glTranslatef(0.0f,0.0f, -0.75f);            
             //move along to right leg
             GL11.glTranslatef(-0.8f,0, 0);
             //draw right leg
             new Cylinder().draw(0.1f,0.1f, 0.75f, 10, 10);
+          //move to foot
+            GL11.glTranslatef(0.0f,0.0f, 0.75f);
+            //draw foot
+            new Sphere().draw(0.2f,10,10);
+            //go back to the top of the leg  
+            GL11.glTranslatef(0.0f,0.0f, -0.75f);
             //move to end of body
             GL11.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
             GL11.glTranslatef(0.4f,-0.5f, 0.7f);
@@ -197,7 +209,7 @@ GL11.glLoadIdentity();
             //rotate to the tail
             GL11.glRotatef(45.0f, 1.0f, 0.0f, 0.0f);
             //place the cone for the tail
-            new Cylinder().draw(0.75f,0, 1.25f, 10, 10);
+            new Cylinder().draw(0.65f,0, 1.25f, 10, 10);
             //return rotation
             GL11.glRotatef(-45.0f, 1.0f, 0.0f, 0.0f);
             //move to left wing
@@ -255,7 +267,7 @@ GL11.glLoadIdentity();
     		{
     			new Normal(t1.toVector(),b1.toVector(),t2.toVector()).submit();
     			
-    			t1.submit();
+    			t2.submit();
     			b1.submit();
     			t2.submit();
     		}
@@ -265,9 +277,9 @@ GL11.glLoadIdentity();
     		{
     			new Normal(b1.toVector(),b2.toVector(),t2.toVector()).submit();
     			
-    			b1.submit();
-    			b2.submit();
     			t2.submit();
+    			b2.submit();
+    			b1.submit();
     		}
     		GL11.glEnd();
     		//side 3 face
@@ -275,9 +287,9 @@ GL11.glLoadIdentity();
     		{
     			new Normal(t2.toVector(),b2.toVector(),t3.toVector()).submit();
     			
-    			t2.submit();
-    			b2.submit();
     			t3.submit();
+    			b2.submit();
+    			t2.submit();
     		}
     		GL11.glEnd();
     		//side 4 face
@@ -285,9 +297,9 @@ GL11.glLoadIdentity();
     		{
     			new Normal(b2.toVector(),b3.toVector(),t3.toVector()).submit();
     			
-    			b2.submit();
-    			b3.submit();
     			t3.submit();
+    			b3.submit();
+    			b2.submit();
     		}
     		GL11.glEnd();
     		//side 5 face
@@ -295,9 +307,9 @@ GL11.glLoadIdentity();
     		{
     			new Normal(t3.toVector(),b3.toVector(),t4.toVector()).submit();
     			
-    			t3.submit();
-    			b3.submit();
     			t4.submit();
+    			b3.submit();
+    			t3.submit();
     		}
     		GL11.glEnd();
     		//side 6 face
@@ -305,9 +317,9 @@ GL11.glLoadIdentity();
     		{
     			new Normal(b3.toVector(),b4.toVector(),t4.toVector()).submit();
     			
-    			b3.submit();
-    			b4.submit();
     			t4.submit();
+    			b4.submit();
+    			b3.submit();
     		}
     		GL11.glEnd();
     		//side 7 face
@@ -315,9 +327,9 @@ GL11.glLoadIdentity();
     		{
     			new Normal(t4.toVector(),b4.toVector(),b5.toVector()).submit();
     			
-    			t4.submit();
-    			b4.submit();
     			b5.submit();
+    			b4.submit();
+    			t4.submit();
     		}
     		GL11.glEnd();
     		//side 8 face
@@ -325,9 +337,9 @@ GL11.glLoadIdentity();
     		{
     			new Normal(t4.toVector(),b5.toVector(),t5.toVector()).submit();
     			
-    			t4.submit();
-    			b5.submit();
     			t5.submit();
+    			b5.submit();
+    			t4.submit();
     		}
     		GL11.glEnd();
     		//side 9 face
@@ -335,9 +347,9 @@ GL11.glLoadIdentity();
     		{
     			new Normal(t5.toVector(),b5.toVector(),b1.toVector()).submit();
     			
-    			t5.submit();
-    			b5.submit();
     			b1.submit();
+    			b5.submit();
+    			t5.submit();
     		}
     		GL11.glEnd();
     		//side 10 face
@@ -345,9 +357,9 @@ GL11.glLoadIdentity();
     		{
     			new Normal(t1.toVector(),b1.toVector(),t5.toVector()).submit();
     			
-    			t1.submit();
-    			b1.submit();
     			t5.submit();
+    			b1.submit();
+    			t1.submit();
     		}
     		GL11.glEnd();
     		////////////////////////////////////////////////////////
