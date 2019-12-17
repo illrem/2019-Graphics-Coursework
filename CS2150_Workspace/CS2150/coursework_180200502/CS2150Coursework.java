@@ -36,7 +36,7 @@ import org.lwjgl.util.glu.Sphere;
 public class CS2150Coursework extends GraphicsLab
 {
 	
-
+	private float rotate;
     private Texture featherTexture;
     private Texture beakTexture;
     
@@ -92,14 +92,26 @@ public class CS2150Coursework extends GraphicsLab
     }
     protected void checkSceneInput()
     {//TODO: Check for keyboard and mouse input here
+    	/**
+    	if(Keyboard.isKeyDown(Keyboard.KEY_R))
+        {   rotate += 1f;
+        }
+    	else
+    	{
+    		rotate = 0;
+    	}
+    	**/
     }
     protected void updateScene()
     {
         //TODO: Update your scene variables here - remember to use the current animation scale value
         //        (obtained via a call to getAnimationScale()) in your modifications so that your animations
         //        can be made faster or slower depending on the machine you are working on
+    	   rotate += 0.01f;
+        
     }
     protected void renderScene()
+
     {//TODO: Render your scene here - remember that a scene graph will help you write this method! 
      //      It will probably call a number of other methods you will write.
     	
@@ -137,7 +149,11 @@ GL11.glLoadIdentity();
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D,featherTexture.getTextureID());
 
-            Colour.WHITE.submit();
+            Colour.WHITE.submit();            
+
+            GL11.glRotatef(rotate, 0.0f, 1.0f, 0.0f);
+            GL11.glTranslatef(0,1.5f,0);
+            
         	//make cone sideways
             //GL11.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
             //draw cone/beak
