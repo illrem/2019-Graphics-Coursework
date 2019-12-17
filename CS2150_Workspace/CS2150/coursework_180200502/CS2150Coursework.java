@@ -19,10 +19,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.Cylinder;
 import org.lwjgl.util.glu.Sphere;
 
-import GraphicsLab.Colour;
-import GraphicsLab.Normal;
-import GraphicsLab.Vertex;
-
 
 /**
  * TODO: Briefly describe your submission here
@@ -39,6 +35,20 @@ import GraphicsLab.Vertex;
  */
 public class CS2150Coursework extends GraphicsLab
 {
+	
+
+    private Texture featherTexture;
+    private Texture beakTexture;
+    
+    ///stolen need to replace
+    /** ids for nearest, linear and mipmapped textures for the ground plane */
+    private Texture groundTextures;
+    /** ids for nearest, linear and mipmapped textures for the daytime back (sky) plane */
+    //private Texture skyDayTextures;
+    /** ids for nearest, linear and mipmapped textures for the night time back (sky) plane */
+    private Texture skyNightTextures;
+    
+	
     //TODO: Feel free to change the window title and default animation scale here
     public static void main(String args[])
     {   new CS2150Coursework().run(WINDOWED,"CS2150 Coursework Submission",0.01f);
@@ -46,6 +56,39 @@ public class CS2150Coursework extends GraphicsLab
 
     protected void initScene() throws Exception
     {//TODO: Initialise your resources here - might well call other methods you write.
+    	// global ambient light level
+    	
+    	
+
+        featherTexture = loadTexture("coursework_180200502/textures/feathertex.bmp");
+        beakTexture = loadTexture("coursework_180200502/textures/beaktex.bmp");
+        groundTextures = loadTexture("coursework_180200502/textures/grass.bmp");
+        //skyDayTextures = loadTexture("coursework_180200502/textures/daySky.bmp");
+        skyNightTextures = loadTexture("coursework_180200502/textures/nightSky.bmp");
+
+        float globalAmbient[]   = {0.2f,  0.2f,  0.2f, 1.0f};
+        // set the global ambient lighting
+        GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT,FloatBuffer.wrap(globalAmbient));
+        // the first light for the scene is soft blue...
+        float diffuse0[]  = { 0.2f,  0.2f, 0.4f, 1.0f};
+        // ...with a very dim ambient contribution...
+        float ambient0[]  = { 0.05f,  0.05f, 0.05f, 1.0f};
+        // ...and is positioned above the viewpoint
+        float position0[] = { 0.0f, 10.0f, 0.0f, 1.0f};
+
+        // supply OpenGL with the properties for the first light
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, FloatBuffer.wrap(ambient0));
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, FloatBuffer.wrap(diffuse0));
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_SPECULAR, FloatBuffer.wrap(diffuse0));
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, FloatBuffer.wrap(position0));
+        // enable the first light
+        GL11.glEnable(GL11.GL_LIGHT0);
+
+        // enable lighting calculations
+        GL11.glEnable(GL11.GL_LIGHTING);
+        // ensure that all normals are re-normalised after transformations automatically
+        GL11.glEnable(GL11.GL_NORMALIZE);
+        
     }
     protected void checkSceneInput()
     {//TODO: Check for keyboard and mouse input here
@@ -60,6 +103,17 @@ public class CS2150Coursework extends GraphicsLab
     {//TODO: Render your scene here - remember that a scene graph will help you write this method! 
      //      It will probably call a number of other methods you will write.
     	
+GL11.glLoadIdentity();
+    	
+        // Position the camera outside the shape
+		GLU.gluLookAt(0, 0, 10,     /* Camera position */
+				      0,0,0,          /* Target */
+				      0, 1, 0         /* Up vector */ 
+				      );
+    	
+    	
+    	drawBackGround();
+    	drawDuck();
     }
     protected void setSceneCamera()
     {
@@ -79,9 +133,13 @@ public class CS2150Coursework extends GraphicsLab
     {
     	GL11.glPushMatrix();
         {
-        
+        	// enable texturing and bind an appropriate texture
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D,featherTexture.getTextureID());
+
+            Colour.WHITE.submit();
         	//make cone sideways
-            GL11.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+            //GL11.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
             //draw cone/beak
             new Cylinder().draw(0.25f, 0.0f, 0.75f, 10, 10);
             //move cylinder to back of cone
@@ -423,6 +481,108 @@ public class CS2150Coursework extends GraphicsLab
     			tl5.submit();
     		}
     		GL11.glEnd();
+        }
+        GL11.glPopMatrix();
+    }
+    
+    private void drawBackGround()
+    {
+    	GL11.glPushMatrix();
+        {
+            // disable lighting calculations so that they don't affect
+            // the appearance of the texture 
+            GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            // change the geometry colour to white so that the texture
+            // is bright and details can be seen clearly
+            Colour.WHITE.submit();
+            // enable texturing and bind an appropriate texture
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D,groundTextures.getTextureID());
+            
+            // position, scale and draw the ground plane using its display list
+            GL11.glTranslatef(0.0f,-1.0f,-10.0f);
+            GL11.glScalef(25.0f, 1.0f, 20.0f);
+            //GL11.glCallList(planeList);
+            
+            Vertex v1 = new Vertex(-0.5f, -1.0f,-0.5f); // left,  back
+            Vertex v2 = new Vertex( 0.5f, -1.0f,-0.5f); // right, back
+            Vertex v3 = new Vertex( 0.5f, -1.0f, 0.5f); // right, front
+            Vertex v4 = new Vertex(-0.5f, -1.0f, 0.5f); // left,  front
+            
+            // draw the plane geometry. order the vertices so that the plane faces up
+            GL11.glBegin(GL11.GL_POLYGON);
+            {
+                new Normal(v4.toVector(),v3.toVector(),v2.toVector(),v1.toVector()).submit();
+                
+                GL11.glTexCoord2f(0.0f,0.0f);
+                v4.submit();
+                
+                GL11.glTexCoord2f(1.0f,0.0f);
+                v3.submit();
+                
+                GL11.glTexCoord2f(1.0f,1.0f);
+                v2.submit();
+                
+                GL11.glTexCoord2f(0.0f,1.0f);
+                v1.submit();
+            }
+            GL11.glEnd();
+            
+            // disable textures and reset any local lighting changes
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glPopAttrib();
+        }
+        GL11.glPopMatrix();
+        
+        // draw the back plane
+        GL11.glPushMatrix();
+        {
+            // disable lighting calculations so that they don't affect
+            // the appearance of the texture 
+            GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            // change the geometry colour to white so that the texture
+            // is bright and details can be seen clearly
+            Colour.WHITE.submit();
+            // enable texturing and bind an appropriate texture
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D,skyNightTextures.getTextureID());
+            
+            // position, scale and draw the back plane using its display list
+            GL11.glTranslatef(0.0f,4.0f,-20.0f);
+            GL11.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+            GL11.glScalef(25.0f, 1.0f, 10.0f);
+            //GL11.glCallList(planeList);
+            
+            Vertex v1 = new Vertex(-0.5f, -1.0f,-0.5f); // left,  back
+            Vertex v2 = new Vertex( 0.5f, -1.0f,-0.5f); // right, back
+            Vertex v3 = new Vertex( 0.5f, -1.0f, 0.5f); // right, front
+            Vertex v4 = new Vertex(-0.5f, -1.0f, 0.5f); // left,  front
+            
+            // draw the plane geometry. order the vertices so that the plane faces up
+            GL11.glBegin(GL11.GL_POLYGON);
+            {
+                new Normal(v4.toVector(),v3.toVector(),v2.toVector(),v1.toVector()).submit();
+                
+                GL11.glTexCoord2f(0.0f,0.0f);
+                v4.submit();
+                
+                GL11.glTexCoord2f(1.0f,0.0f);
+                v3.submit();
+                
+                GL11.glTexCoord2f(1.0f,1.0f);
+                v2.submit();
+                
+                GL11.glTexCoord2f(0.0f,1.0f);
+                v1.submit();
+            }
+            GL11.glEnd();
+            
+            
+            // disable textures and reset any local lighting changes
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glPopAttrib();
         }
         GL11.glPopMatrix();
     }
