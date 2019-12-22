@@ -37,6 +37,8 @@ public class CS2150Coursework extends GraphicsLab
 {
 	private boolean flapup = true;
 	private float rotate;
+	private float groundsize = -31.25f;
+	private float advance1, advance2,advance3, advance4,advance5, advance6,advance7, advance8,advance9, advance10;
 	private float position = 0;
 	private float wingflap = 0;
     private Texture featherTexture;
@@ -60,11 +62,11 @@ public class CS2150Coursework extends GraphicsLab
     {//TODO: Initialise your resources here - might well call other methods you write.
     	// global ambient light level
     	
-    	
+    	advance1 = groundsize; advance2 = advance1 + groundsize;advance3 = advance2 + groundsize; advance4 = advance3 + groundsize;advance5 = advance4 + groundsize; advance6 = advance5 + groundsize;advance7  = advance6 + groundsize; advance8  = advance7 + groundsize;advance9 = advance8 + groundsize; advance10 = advance9 + groundsize;
 
         featherTexture = loadTexture("coursework_180200502/textures/feathertex.bmp");
         beakTexture = loadTexture("coursework_180200502/textures/beaktex.bmp");
-        groundTextures = loadTexture("coursework_180200502/textures/grass.bmp");
+        groundTextures = loadTexture("coursework_180200502/textures/river.bmp");
         //skyDayTextures = loadTexture("coursework_180200502/textures/daySky.bmp");
         skyNightTextures = loadTexture("coursework_180200502/textures/nightSky.bmp");
 
@@ -141,6 +143,11 @@ public class CS2150Coursework extends GraphicsLab
     	   {
     	   wingflap -= 0.01f;
     	   }
+    	   
+    	   
+    	   advance1 += 0.01f;advance2 += 0.01f;advance3 += 0.01f;advance4 += 0.01f;advance5 += 0.01f;advance6 += 0.01f;advance7 += 0.01f;advance8 += 0.01f;advance9 += 0.01f;advance10 += 0.01f;
+    	   
+    	   
     }
     protected void renderScene()
 
@@ -156,7 +163,17 @@ GL11.glLoadIdentity();
 				      );
     	
     	
-    	drawBackGround();
+    	drawGround(advance1);
+    	drawGround(advance2);
+    	drawGround(advance3);
+    	drawGround(advance4);
+    	drawGround(advance5);
+    	drawGround(advance6);
+    	drawGround(advance7);
+    	drawGround(advance8);
+    	drawGround(advance9);
+    	drawGround(advance10);
+    	drawBack();
     	drawDuck();
     }
     protected void setSceneCamera()
@@ -558,8 +575,8 @@ GL11.glLoadIdentity();
         }
         GL11.glPopMatrix();
     }
-    
-    private void drawBackGround()
+      
+    private void drawGround(float advance)
     {
     	GL11.glPushMatrix();
         {
@@ -575,8 +592,8 @@ GL11.glLoadIdentity();
             GL11.glBindTexture(GL11.GL_TEXTURE_2D,groundTextures.getTextureID());
             
             // position, scale and draw the ground plane using its display list
-            GL11.glTranslatef(0.0f,-1.0f,-10.0f);
-            GL11.glScalef(25.0f, 1.0f, 20.0f);
+            GL11.glTranslatef(5.0f,-1.0f,advance);
+            GL11.glScalef(50.0f, 1.0f, 53.5f);
             //GL11.glCallList(planeList);
             
             Vertex v1 = new Vertex(-0.5f, -1.0f,-0.5f); // left,  back
@@ -609,7 +626,12 @@ GL11.glLoadIdentity();
         }
         GL11.glPopMatrix();
         
-        // draw the back plane
+        
+    }
+    
+    private void drawBack()
+    {
+    	// draw the back plane
         GL11.glPushMatrix();
         {
             // disable lighting calculations so that they don't affect
@@ -624,7 +646,7 @@ GL11.glLoadIdentity();
             GL11.glBindTexture(GL11.GL_TEXTURE_2D,skyNightTextures.getTextureID());
             
             // position, scale and draw the back plane using its display list
-            GL11.glTranslatef(0.0f,4.0f,-20.0f);
+            GL11.glTranslatef(0.0f,4.0f,-75.0f);
             GL11.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
             GL11.glScalef(25.0f, 1.0f, 10.0f);
             //GL11.glCallList(planeList);
@@ -659,6 +681,7 @@ GL11.glLoadIdentity();
             GL11.glPopAttrib();
         }
         GL11.glPopMatrix();
+    
     }
     
 }
