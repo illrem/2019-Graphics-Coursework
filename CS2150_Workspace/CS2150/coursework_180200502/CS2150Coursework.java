@@ -35,8 +35,10 @@ import org.lwjgl.util.glu.Sphere;
  */
 public class CS2150Coursework extends GraphicsLab
 {
-	
+	private boolean flapup = true;
 	private float rotate;
+	private float position = 0;
+	private float wingflap = 0;
     private Texture featherTexture;
     private Texture beakTexture;
     
@@ -66,7 +68,7 @@ public class CS2150Coursework extends GraphicsLab
         //skyDayTextures = loadTexture("coursework_180200502/textures/daySky.bmp");
         skyNightTextures = loadTexture("coursework_180200502/textures/nightSky.bmp");
 
-        float globalAmbient[]   = {0.2f,  0.2f,  0.2f, 1.0f};
+        float globalAmbient[]   = {0.5f,  0.5f,  0.5f, 1.0f};
         // set the global ambient lighting
         GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT,FloatBuffer.wrap(globalAmbient));
         // the first light for the scene is soft blue...
@@ -101,6 +103,18 @@ public class CS2150Coursework extends GraphicsLab
     		rotate = 0;
     	}
     	**/
+    	
+    	//controls for the bird left to right
+    	if(Keyboard.isKeyDown(Keyboard.KEY_A))
+        {   
+    		if (position <= 7.55)
+    		position += 0.01f;
+        }
+    	else if(Keyboard.isKeyDown(Keyboard.KEY_D))
+        {   
+    		if (position >= -7.55)
+    		position -= 0.01f;
+        }
     }
     protected void updateScene()
     {
@@ -108,7 +122,25 @@ public class CS2150Coursework extends GraphicsLab
         //        (obtained via a call to getAnimationScale()) in your modifications so that your animations
         //        can be made faster or slower depending on the machine you are working on
     	   rotate += 0.01f;
-        
+    	   
+    	//wingflap 
+    	   if (wingflap <= 0)
+    	   {
+    		   flapup = true;
+    	   }
+    	   else if(wingflap >= 45)
+    	   {
+    		   flapup = false;    		   
+    	   }
+    	   
+    	   if (flapup)
+    	   {
+    	   wingflap += 0.01f;
+    	   }
+    	   else
+    	   {
+    	   wingflap -= 0.01f;
+    	   }
     }
     protected void renderScene()
 
@@ -118,8 +150,8 @@ public class CS2150Coursework extends GraphicsLab
 GL11.glLoadIdentity();
     	
         // Position the camera outside the shape
-		GLU.gluLookAt(0, 0, 10,     /* Camera position */
-				      0,0,0,          /* Target */
+		GLU.gluLookAt(0, 10, 15,     /* Camera position */
+				      0,4,0,          /* Target */
 				      0, 1, 0         /* Up vector */ 
 				      );
     	
@@ -151,11 +183,14 @@ GL11.glLoadIdentity();
 
             Colour.WHITE.submit();            
 
-            GL11.glRotatef(rotate, 0.0f, 1.0f, 0.0f);
-            GL11.glTranslatef(0,1.5f,0);
+          //rotate to the same direction as the viewer is watching from
+            GL11.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+            //GL11.glRotatef(rotate, 0.0f, 1.0f, 0.0f);
             
-        	//make cone sideways
-            //GL11.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+            //make the center of the bird the middle
+            GL11.glTranslatef(position,2.5f,2.0f);
+            
+        	
             //draw cone/beak
             new Cylinder().draw(0.25f, 0.0f, 0.75f, 10, 10);
             //move cylinder to back of cone
@@ -213,9 +248,11 @@ GL11.glLoadIdentity();
             //return rotation
             GL11.glRotatef(-45.0f, 1.0f, 0.0f, 0.0f);
             //move to left wing
-            GL11.glTranslatef(0.7f,-0.5f, -0.7f);
+            GL11.glTranslatef(0.7f,-0.7f, -0.7f);
             //rotate wing
-            GL11.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
+            GL11.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);            
+            //make wings flap
+            GL11.glRotatef(wingflap, 1.0f, 0.0f, 0.0f);
             
             
             
@@ -241,11 +278,11 @@ GL11.glLoadIdentity();
             {
                 new Normal(t1.toVector(),t2.toVector(),t3.toVector()).submit();
                 
-                t1.submit();
-                t2.submit();
-                t3.submit();
-                t4.submit();
                 t5.submit();
+                t4.submit();
+                t3.submit();
+                t2.submit();
+                t1.submit();
             }
             GL11.glEnd();
             
@@ -254,11 +291,11 @@ GL11.glLoadIdentity();
     		{
     			new Normal(b5.toVector(),b4.toVector(),b3.toVector(),b2.toVector()).submit();
                 
-                b5.submit();
-                b4.submit();
-                b3.submit();
+                b1.submit();
                 b2.submit();
-                b1.submit();   			
+                b3.submit();
+                b4.submit();
+                b5.submit();   			
     			
     		}
     		GL11.glEnd();
@@ -269,7 +306,7 @@ GL11.glLoadIdentity();
     			
     			t2.submit();
     			b1.submit();
-    			t2.submit();
+    			t1.submit();
     		}
     		GL11.glEnd();
     		//side 2 face
@@ -362,10 +399,18 @@ GL11.glLoadIdentity();
     			t1.submit();
     		}
     		GL11.glEnd();
+
+    		//move back to correct rotation
+            GL11.glRotatef(-wingflap, 1.0f, 0.0f, 0.0f);
+    		
+            
     		////////////////////////////////////////////////////////
     		//move to right wing
             GL11.glTranslatef(0,0, 1.4f);
 
+            
+            //rotate right wing
+            GL11.glRotatef(-wingflap, 1.0f, 0.0f, 0.0f);
             //GL11.glRotatef(10.0f, 0.0f, 1.0f, 0.0f);
          // the vertices for the right wing
 
@@ -509,6 +554,7 @@ GL11.glLoadIdentity();
     			tl5.submit();
     		}
     		GL11.glEnd();
+    		GL11.glRotatef(wingflap, 1.0f, 0.0f, 0.0f);
         }
         GL11.glPopMatrix();
     }
