@@ -71,20 +71,16 @@ public class ShapeDesigner extends AbstractDesigner {
             Vertex l2 = new Vertex(  -0.35f,  0.1f,    0.02f);  
             Vertex l3 = new Vertex(  -0.25f,  0.1f,   -0.02f);   
             Vertex l4 = new Vertex(  -0.35f,  0.1f,   -0.02f); 
-            Vertex lf1 = new Vertex(  0f,  0f,    0f);  
-            Vertex lf2 = new Vertex(  0f,  0f,    0f);  
-            Vertex lf3 = new Vertex(  0f,  0f,    0f);            
-            Vertex lf4 = new Vertex(  0f,  0f,    0f);
+            Vertex lf1 = new Vertex(  -0.2f,  0.15f,    0f);  
+            Vertex lf2 = new Vertex(  -0.4f,  0.15f,    0f); 
             
             //right vectors            
             Vertex r1 = new Vertex(  -0.25f,  -0.1f,    0.02f);  
             Vertex r2 = new Vertex(  -0.35f,  -0.1f,    0.02f);  
             Vertex r3 = new Vertex(  -0.25f,  -0.1f,   -0.02f);   
             Vertex r4 = new Vertex(  -0.35f,  -0.1f,   -0.02f); 
-            Vertex rf1 = new Vertex(  0f,  0f,    0f);  
-            Vertex rf2 = new Vertex(  0f,  0f,    0f);  
-            Vertex rf3 = new Vertex(  0f,  0f,    0f);            
-            Vertex rf4 = new Vertex(  0f,  0f,    0f);
+            Vertex rf1 = new Vertex(  -0.2f, -0.15f,    0f);  
+            Vertex rf2 = new Vertex(  -0.4f, -0.15f,    0f); 
             
             //tail vectors          
             Vertex b1 = new Vertex(-0.5f, 0f, 0.05f);  
@@ -180,6 +176,9 @@ public class ShapeDesigner extends AbstractDesigner {
             }
             GL11.glEnd();
             
+            
+            
+            
             ////////////////draw the right side of the fish
             //s1
             GL11.glBegin(GL11.GL_POLYGON);
@@ -270,6 +269,62 @@ public class ShapeDesigner extends AbstractDesigner {
                 r1.submit();
                 r3.submit();                
                 f1.submit();
+                
+            }
+            GL11.glEnd();
+            
+//draw right fin
+            
+            //top face of fin
+            GL11.glBegin(GL11.GL_POLYGON);
+            {
+                new Normal(r1.toVector(),r2.toVector(),rf1.toVector()).submit();
+                
+                r2.submit();
+                rf2.submit();                
+                rf1.submit();
+                r1.submit();
+                
+            }
+            GL11.glEnd();
+            
+            //bottom face of fin
+            GL11.glBegin(GL11.GL_POLYGON);
+            {
+                new Normal(rf1.toVector(),rf2.toVector(),rf1.toVector()).submit();
+                
+
+                rf2.submit();                
+                r4.submit(); 
+                r3.submit();              
+                rf1.submit();
+                
+            }
+            GL11.glEnd();
+            
+
+            //side face of fins
+            GL11.glBegin(GL11.GL_POLYGON);
+            {
+                new Normal(r1.toVector(),r3.toVector(),rf1.toVector()).submit();
+                
+
+                rf1.submit();                
+                r3.submit();              
+                r1.submit();
+                
+            }
+            GL11.glEnd();
+            
+            GL11.glBegin(GL11.GL_POLYGON);
+            {
+                new Normal(rf1.toVector(),r4.toVector(),r3.toVector()).submit();
+                
+
+                rf2.submit();
+                r2.submit(); 
+                
+                r4.submit();  
                 
             }
             GL11.glEnd();
@@ -368,6 +423,62 @@ public class ShapeDesigner extends AbstractDesigner {
                 
             }
             GL11.glEnd();
+            
+//draw LEFT fin
+            
+            //top face of fin
+            GL11.glBegin(GL11.GL_POLYGON);
+            {
+                new Normal(l1.toVector(),l2.toVector(),lf1.toVector()).submit();
+                
+                l1.submit();
+                lf1.submit();                
+                lf2.submit();
+                l2.submit();
+                
+            }
+            GL11.glEnd();
+            
+            //bottom face of fin
+            GL11.glBegin(GL11.GL_POLYGON);
+            {
+                new Normal(lf1.toVector(),lf2.toVector(),lf1.toVector()).submit();
+                
+
+                lf1.submit();                
+                l3.submit(); 
+                l4.submit();              
+                lf2.submit();
+                
+            }
+            GL11.glEnd();
+            
+
+            //side face of fins
+            GL11.glBegin(GL11.GL_POLYGON);
+            {
+                new Normal(l1.toVector(),l3.toVector(),lf1.toVector()).submit();
+                
+
+                l1.submit();                
+                l3.submit();              
+                lf1.submit();
+                
+            }
+            GL11.glEnd();
+            
+            GL11.glBegin(GL11.GL_POLYGON);
+            {
+                new Normal(lf1.toVector(),l4.toVector(),l3.toVector()).submit();
+                
+
+                l4.submit();
+                l2.submit();                
+                lf2.submit();  
+                
+            }
+            GL11.glEnd();
+            
             
         }
         GL11.glPopMatrix();

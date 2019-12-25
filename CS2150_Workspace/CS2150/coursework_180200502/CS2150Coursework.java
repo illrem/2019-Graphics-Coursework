@@ -18,6 +18,7 @@ import GraphicsLab.*;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.Cylinder;
 import org.lwjgl.util.glu.Sphere;
+import java.util.*;
 
 
 /**
@@ -35,9 +36,10 @@ import org.lwjgl.util.glu.Sphere;
  */
 public class CS2150Coursework extends GraphicsLab
 {
+	Random rnd = new Random(); 
 	private boolean flapup = true;
 	private float rotate;
-	private float groundsize = -31.25f;
+	private float groundsize = -47f;
 	private float advance1, advance2,advance3, advance4,advance5, advance6,advance7, advance8,advance9, advance10;
 	private float position = 0;
 	private float wingflap = 0;
@@ -137,12 +139,13 @@ public class CS2150Coursework extends GraphicsLab
     	   
     	   if (flapup)
     	   {
-    	   wingflap += 0.01f;
+    	   wingflap += 0.1f;
     	   }
     	   else
     	   {
-    	   wingflap -= 0.01f;
+    	   wingflap -= 0.1f;
     	   }
+    	   
     	   
     	   
     	   advance1 += 0.01f;advance2 += 0.01f;advance3 += 0.01f;advance4 += 0.01f;advance5 += 0.01f;advance6 += 0.01f;advance7 += 0.01f;advance8 += 0.01f;advance9 += 0.01f;advance10 += 0.01f;
@@ -173,7 +176,7 @@ GL11.glLoadIdentity();
     	drawGround(advance8);
     	drawGround(advance9);
     	drawGround(advance10);
-    	drawBack();
+    	//drawBack();
     	drawDuck();
     }
     protected void setSceneCamera()
@@ -194,11 +197,16 @@ GL11.glLoadIdentity();
     {
     	GL11.glPushMatrix();
         {
+        	// disable lighting calculations so that they don't affect
+            // the appearance of the texture 
+            GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            // change the geometry colour to white so that the texture
+            // is bright and details can be seen clearly
+            Colour.WHITE.submit();
         	// enable texturing and bind an appropriate texture
             GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D,featherTexture.getTextureID());
-
-            Colour.WHITE.submit();            
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D,beakTexture.getTextureID());           
 
           //rotate to the same direction as the viewer is watching from
             GL11.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
@@ -210,6 +218,10 @@ GL11.glLoadIdentity();
         	
             //draw cone/beak
             new Cylinder().draw(0.25f, 0.0f, 0.75f, 10, 10);
+            //change the texture
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D,featherTexture.getTextureID());
             //move cylinder to back of cone
             GL11.glTranslatef(0,0, -0.5f);
             //draw cylinder
@@ -238,8 +250,20 @@ GL11.glLoadIdentity();
             new Cylinder().draw(0.1f,0.1f, 0.75f, 10, 10);
             //move to foot
             GL11.glTranslatef(0.0f,0.0f, 0.75f);
+            
+            //change texture
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D,beakTexture.getTextureID());
+            
             //draw foot
             new Sphere().draw(0.2f,10,10);
+            
+            //change texture
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D,featherTexture.getTextureID());
+            
             //go back to the top of the leg
             GL11.glTranslatef(0.0f,0.0f, -0.75f);            
             //move along to right leg
@@ -248,9 +272,21 @@ GL11.glLoadIdentity();
             new Cylinder().draw(0.1f,0.1f, 0.75f, 10, 10);
           //move to foot
             GL11.glTranslatef(0.0f,0.0f, 0.75f);
+            
+            //change texture
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D,beakTexture.getTextureID());
+            
             //draw foot
             new Sphere().draw(0.2f,10,10);
             //go back to the top of the leg  
+            
+            //change texture
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D,featherTexture.getTextureID());
+            
             GL11.glTranslatef(0.0f,0.0f, -0.75f);
             //move to end of body
             GL11.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
@@ -572,6 +608,10 @@ GL11.glLoadIdentity();
     		}
     		GL11.glEnd();
     		GL11.glRotatef(wingflap, 1.0f, 0.0f, 0.0f);
+    		
+    		// disable textures and reset any local lighting changes
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glPopAttrib();
         }
         GL11.glPopMatrix();
     }
@@ -592,8 +632,8 @@ GL11.glLoadIdentity();
             GL11.glBindTexture(GL11.GL_TEXTURE_2D,groundTextures.getTextureID());
             
             // position, scale and draw the ground plane using its display list
-            GL11.glTranslatef(5.0f,-1.0f,advance);
-            GL11.glScalef(50.0f, 1.0f, 53.5f);
+            GL11.glTranslatef(10f,-1.0f,advance);
+            GL11.glScalef(75.0f, 1.0f, 80.25f);
             //GL11.glCallList(planeList);
             
             Vertex v1 = new Vertex(-0.5f, -1.0f,-0.5f); // left,  back
@@ -684,4 +724,442 @@ GL11.glLoadIdentity();
     
     }
     
+    private void drawFish()
+    {
+    	 GL11.glPushMatrix();
+         {
+         	
+         	//front vector
+         	Vertex f1 = new Vertex(0,0,0);
+         
+         	//the top vectors
+             Vertex t1 = new Vertex( -0.2f,  0f, 0.2f);
+             Vertex t2 = new Vertex( -0.4f,  0f, 0.2f);
+             
+             // the bottom vectors
+             Vertex z1 = new Vertex( -0.2f,  0.0f, -0.2f);
+             Vertex z2 = new Vertex( -0.4f,  0.0f, -0.2f);
+             
+             //left vectors            
+             Vertex l1 = new Vertex(  -0.25f,  0.1f,    0.02f);  
+             Vertex l2 = new Vertex(  -0.35f,  0.1f,    0.02f);  
+             Vertex l3 = new Vertex(  -0.25f,  0.1f,   -0.02f);   
+             Vertex l4 = new Vertex(  -0.35f,  0.1f,   -0.02f); 
+             Vertex lf1 = new Vertex(  -0.2f,  0.15f,    0f);  
+             Vertex lf2 = new Vertex(  -0.4f,  0.15f,    0f); 
+             
+             //right vectors            
+             Vertex r1 = new Vertex(  -0.25f,  -0.1f,    0.02f);  
+             Vertex r2 = new Vertex(  -0.35f,  -0.1f,    0.02f);  
+             Vertex r3 = new Vertex(  -0.25f,  -0.1f,   -0.02f);   
+             Vertex r4 = new Vertex(  -0.35f,  -0.1f,   -0.02f); 
+             Vertex rf1 = new Vertex(  -0.2f, -0.15f,    0f);  
+             Vertex rf2 = new Vertex(  -0.4f, -0.15f,    0f); 
+             
+             //tail vectors          
+             Vertex b1 = new Vertex(-0.5f, 0f, 0.05f);  
+             Vertex b2 = new Vertex(-0.5f, 0f,-0.05f); 
+             Vertex b3 = new Vertex(-0.6f, 0.05f,-0.15f);  
+             Vertex b4 = new Vertex(-0.6f, 0.05f, 0.15f);  
+             Vertex b5 = new Vertex(-0.6f,-0.05f,-0.15f);  
+             Vertex b6 = new Vertex(-0.6f,-0.05f, 0.15f);  
+             
+             /**
+             // draw the top face:
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(t1.toVector(),t2.toVector(),z1.toVector()).submit();
+                 
+                 f1.submit();
+                 t1.submit();                
+                 t2.submit();
+                 b1.submit();
+                 b2.submit();
+                 z2.submit();                
+                 z1.submit();
+             }
+             GL11.glEnd();
+             **/
+             
+          // draw the tail:
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(b1.toVector(),b2.toVector(),b3.toVector()).submit();
+                 
+                 b2.submit();
+                 b3.submit();                
+                 b4.submit();
+                 b1.submit();
+                 
+             }
+             GL11.glEnd();
+     	
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(b1.toVector(),b2.toVector(),b5.toVector()).submit();
+                 
+                 b1.submit();
+                 b6.submit();                
+                 b5.submit();
+                 b2.submit();
+                 
+             }
+             GL11.glEnd();
+         	
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(b1.toVector(),b4.toVector(),b6.toVector()).submit();
+                 
+                 b1.submit();
+                 b4.submit();                
+                 b6.submit();
+                 
+             }
+             GL11.glEnd();
+             
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(b2.toVector(),b5.toVector(),b3.toVector()).submit();
+                 
+                 b2.submit();
+                 b5.submit();                
+                 b3.submit();
+                 
+             }
+             GL11.glEnd();
+         	
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(b4.toVector(),b3.toVector(),b5.toVector()).submit();
+                 
+                 b4.submit();
+                 b3.submit();
+                 b5.submit();
+                 b6.submit();
+             }
+             GL11.glEnd();
+     		
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(b2.toVector(),b5.toVector(),b3.toVector()).submit();
+                 
+                 b2.submit();
+                 b5.submit();                
+                 b3.submit();
+                 
+             }
+             GL11.glEnd();
+             
+             
+             
+             
+             ////////////////draw the right side of the fish
+             //s1
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(t1.toVector(),r1.toVector(),f1.toVector()).submit();
+                 
+                 t1.submit();
+                 r1.submit();                
+                 f1.submit();
+                 
+             }
+             GL11.glEnd();
+     		//s2
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(t1.toVector(),t2.toVector(),r2.toVector()).submit();
+                 
+                 t1.submit();
+                 t2.submit();                
+                 r2.submit();
+                 r1.submit();
+                 
+             }
+             GL11.glEnd();
+             
+             //s3
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(b1.toVector(),r2.toVector(),t2.toVector()).submit();
+                 
+                 b1.submit();
+                 r2.submit();                
+                 t2.submit();
+                 
+             }
+             GL11.glEnd();
+             //s4
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(b1.toVector(),b2.toVector(),r2.toVector()).submit();
+                 
+                 b1.submit();
+                 b2.submit();                
+                 r4.submit();
+                 r2.submit();
+                 
+             }
+             GL11.glEnd();
+             //s6
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(b2.toVector(),z2.toVector(),r4.toVector()).submit();
+                 
+                 b2.submit();
+                 z2.submit();                
+                 r4.submit();
+                 
+             }
+             GL11.glEnd();
+             //s7
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(r4.toVector(),r3.toVector(),z1.toVector()).submit();
+                 
+                 r4.submit();
+                 z2.submit();                
+                 z1.submit();
+                 r3.submit();
+                 
+             }
+             GL11.glEnd();
+             //s8
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(r3.toVector(),f1.toVector(),z1.toVector()).submit();
+                 
+                 r3.submit();
+                 z1.submit();                
+                 f1.submit();
+                 
+             }
+             GL11.glEnd();
+           //s9
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(f1.toVector(),r3.toVector(),r1.toVector()).submit();
+                 
+                 r1.submit();
+                 r3.submit();                
+                 f1.submit();
+                 
+             }
+             GL11.glEnd();
+             
+ //draw right fin
+             
+             //top face of fin
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(r1.toVector(),r2.toVector(),rf1.toVector()).submit();
+                 
+                 r2.submit();
+                 rf2.submit();                
+                 rf1.submit();
+                 r1.submit();
+                 
+             }
+             GL11.glEnd();
+             
+             //bottom face of fin
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(rf1.toVector(),rf2.toVector(),rf1.toVector()).submit();
+                 
+
+                 rf2.submit();                
+                 r4.submit(); 
+                 r3.submit();              
+                 rf1.submit();
+                 
+             }
+             GL11.glEnd();
+             
+
+             //side face of fins
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(r1.toVector(),r3.toVector(),rf1.toVector()).submit();
+                 
+
+                 rf1.submit();                
+                 r3.submit();              
+                 r1.submit();
+                 
+             }
+             GL11.glEnd();
+             
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(rf1.toVector(),r4.toVector(),r3.toVector()).submit();
+                 
+
+                 rf2.submit();
+                 r2.submit(); 
+                 
+                 r4.submit();  
+                 
+             }
+             GL11.glEnd();
+             
+             
+          ///////////////draw left side of fish   
+           //s1
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(t1.toVector(),l1.toVector(),f1.toVector()).submit();
+                 
+                 f1.submit();
+                 l1.submit();                
+                 t1.submit();
+                 
+             }
+             GL11.glEnd();
+     		//s2
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(t1.toVector(),t2.toVector(),l2.toVector()).submit();
+                 
+                 l1.submit();
+                 l2.submit();                
+                 t2.submit();
+                 t1.submit();
+                 
+             }
+             GL11.glEnd();
+             
+             //s3
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(b1.toVector(),l2.toVector(),t2.toVector()).submit();
+                 
+                 t2.submit();
+                 l2.submit();                
+                 b1.submit();
+                 
+             }
+             GL11.glEnd();
+             //s4
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(b1.toVector(),b2.toVector(),l2.toVector()).submit();
+                 
+                 l2.submit();
+                 l4.submit();                
+                 b2.submit();
+                 b1.submit();
+                 
+             }
+             GL11.glEnd();
+             //s6
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(b2.toVector(),z2.toVector(),l4.toVector()).submit();
+                 
+                 l4.submit();
+                 z2.submit();                
+                 b2.submit();
+                 
+             }
+             GL11.glEnd();
+             //s7
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(l4.toVector(),l3.toVector(),z1.toVector()).submit();
+                 
+                 l3.submit();
+                 z1.submit();                
+                 z2.submit();
+                 l4.submit();
+                 
+             }
+             GL11.glEnd();
+             //s8
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(l3.toVector(),f1.toVector(),z1.toVector()).submit();
+                 
+                 f1.submit();
+                 z1.submit();                
+                 l3.submit();
+                 
+             }
+             GL11.glEnd();
+           //s9
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(f1.toVector(),l3.toVector(),l1.toVector()).submit();
+                 
+                 f1.submit();
+                 l3.submit();                
+                 l1.submit();
+                 
+             }
+             GL11.glEnd();
+             
+ //draw LEFT fin
+             
+             //top face of fin
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(l1.toVector(),l2.toVector(),lf1.toVector()).submit();
+                 
+                 l1.submit();
+                 lf1.submit();                
+                 lf2.submit();
+                 l2.submit();
+                 
+             }
+             GL11.glEnd();
+             
+             //bottom face of fin
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(lf1.toVector(),lf2.toVector(),lf1.toVector()).submit();
+                 
+
+                 lf1.submit();                
+                 l3.submit(); 
+                 l4.submit();              
+                 lf2.submit();
+                 
+             }
+             GL11.glEnd();
+             
+
+             //side face of fins
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(l1.toVector(),l3.toVector(),lf1.toVector()).submit();
+                 
+
+                 l1.submit();                
+                 l3.submit();              
+                 lf1.submit();
+                 
+             }
+             GL11.glEnd();
+             
+             GL11.glBegin(GL11.GL_POLYGON);
+             {
+                 new Normal(lf1.toVector(),l4.toVector(),l3.toVector()).submit();
+                 
+
+                 l4.submit();
+                 l2.submit();                
+                 lf2.submit();  
+                 
+             }
+             GL11.glEnd();
+             
+             
+         }
+         GL11.glPopMatrix();
+    }
+
+private void drawTree()
+{
+	
+}
 }
