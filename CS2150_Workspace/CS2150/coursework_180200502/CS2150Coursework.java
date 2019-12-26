@@ -36,16 +36,20 @@ import java.util.*;
  */
 public class CS2150Coursework extends GraphicsLab
 {
+	float fishx,fishy,fishz,fishacel;
 	Random rnd = new Random(); 
 	private boolean flapup = true;
 	private float rotate;
-	private float groundsize = -47f;
+	private float groundsize = -50f;
 	private float advance1, advance2,advance3, advance4,advance5, advance6,advance7, advance8,advance9, advance10;
 	private float position = 0;
 	private float wingflap = 0;
     private Texture featherTexture;
     private Texture beakTexture;
+    private float gamespeed=0.01f;
     
+    
+    private Texture scaleTexture;
     ///stolen need to replace
     /** ids for nearest, linear and mipmapped textures for the ground plane */
     private Texture groundTextures;
@@ -64,12 +68,15 @@ public class CS2150Coursework extends GraphicsLab
     {//TODO: Initialise your resources here - might well call other methods you write.
     	// global ambient light level
     	
-    	advance1 = groundsize; advance2 = advance1 + groundsize;advance3 = advance2 + groundsize; advance4 = advance3 + groundsize;advance5 = advance4 + groundsize; advance6 = advance5 + groundsize;advance7  = advance6 + groundsize; advance8  = advance7 + groundsize;advance9 = advance8 + groundsize; advance10 = advance9 + groundsize;
-
+    	advance1 = 0; advance2 = advance1 + groundsize;advance3 = advance2 + groundsize; advance4 = advance3 + groundsize;advance5 = advance4 + groundsize; advance6 = advance5 + groundsize;advance7  = advance6 + groundsize; advance8  = advance7 + groundsize;advance9 = advance8 + groundsize; advance10 = advance9 + groundsize;
+    	
+    	fishz = groundsize;
+    	fishx=-5f; fishy = -3.5f;fishacel=0.03f;
+    	
         featherTexture = loadTexture("coursework_180200502/textures/feathertex.bmp");
         beakTexture = loadTexture("coursework_180200502/textures/beaktex.bmp");
         groundTextures = loadTexture("coursework_180200502/textures/river.bmp");
-        //skyDayTextures = loadTexture("coursework_180200502/textures/daySky.bmp");
+        scaleTexture = loadTexture("coursework_180200502/textures/scales.bmp");
         skyNightTextures = loadTexture("coursework_180200502/textures/nightSky.bmp");
 
         float globalAmbient[]   = {0.5f,  0.5f,  0.5f, 1.0f};
@@ -139,17 +146,31 @@ public class CS2150Coursework extends GraphicsLab
     	   
     	   if (flapup)
     	   {
-    	   wingflap += 0.1f;
+    	   wingflap += gamespeed;
     	   }
     	   else
     	   {
-    	   wingflap -= 0.1f;
+    	   wingflap -= gamespeed;
     	   }
     	   
     	   
     	   
-    	   advance1 += 0.01f;advance2 += 0.01f;advance3 += 0.01f;advance4 += 0.01f;advance5 += 0.01f;advance6 += 0.01f;advance7 += 0.01f;advance8 += 0.01f;advance9 += 0.01f;advance10 += 0.01f;
     	   
+    	   checkadvance();
+    	   
+    	   //fish movement
+    	   
+    	   fishz += gamespeed;
+    	   fishx += 2*gamespeed;
+    	   
+    	   fishacel -= 0.00005;
+    	   fishy += fishacel;
+    	   
+    	   if (fishy < -3.5f + ((1+rnd.nextFloat())*-500))
+    	   {
+    	   fishz = groundsize;
+       	   fishx=(rnd.nextFloat()+1f)*-4; fishy = -3.5f;fishacel=0.03f;
+    	   }
     	   
     }
     protected void renderScene()
@@ -176,8 +197,11 @@ GL11.glLoadIdentity();
     	drawGround(advance8);
     	drawGround(advance9);
     	drawGround(advance10);
-    	//drawBack();
+    	drawBack();
     	drawDuck();
+    	 
+    	 
+    	drawFish();
     }
     protected void setSceneCamera()
     {
@@ -725,10 +749,27 @@ GL11.glLoadIdentity();
     }
     
     private void drawFish()
+
     {
     	 GL11.glPushMatrix();
          {
-         	
+        	 //move fish to correct place
+             GL11.glTranslatef(fishx,fishy,fishz);
+        	 
+
+          // disable lighting calculations so that they don't affect
+             // the appearance of the texture 
+             GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+             GL11.glDisable(GL11.GL_LIGHTING);
+             // change the geometry colour to white so that the texture
+             // is bright and details can be seen clearly
+             Colour.WHITE.submit();
+         	// enable texturing and bind an appropriate texture
+             GL11.glEnable(GL11.GL_TEXTURE_2D);
+             GL11.glBindTexture(GL11.GL_TEXTURE_2D,scaleTexture.getTextureID());      
+             
+             GL11.glScalef(5.0f, 5.0f, 5.0f);
+             
          	//front vector
          	Vertex f1 = new Vertex(0,0,0);
          
@@ -1153,6 +1194,9 @@ GL11.glLoadIdentity();
              }
              GL11.glEnd();
              
+          // disable textures and reset any local lighting changes
+             GL11.glDisable(GL11.GL_TEXTURE_2D);
+             GL11.glPopAttrib();
              
          }
          GL11.glPopMatrix();
@@ -1160,6 +1204,98 @@ GL11.glLoadIdentity();
 
 private void drawTree()
 {
-	
+	// draw the tree
+    GL11.glPushMatrix();
+    {
+        // how shiny are the front faces of the trunk (specular exponent)
+        float trunkFrontShininess  = 20.0f;
+        // specular reflection of the front faces of the trunk
+        float trunkFrontSpecular[] = {0.2f, 0.2f, 0.1f, 1.0f};
+        // diffuse reflection of the front faces of the trunk
+        float trunkFrontDiffuse[]  = {0.38f, 0.29f, 0.07f, 1.0f};
+        
+        // set the material properties for the trunk using OpenGL
+        GL11.glMaterialf(GL11.GL_FRONT, GL11.GL_SHININESS, trunkFrontShininess);
+        GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SPECULAR, FloatBuffer.wrap(trunkFrontSpecular));
+        GL11.glMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE, FloatBuffer.wrap(trunkFrontDiffuse));
+
+        // position the tree
+        GL11.glTranslatef(0.0f, -1.0f, -12.0f);
+        
+        // draw the trunk using a cylinder quadric object. Surround the draw call with a
+        // push/pop matrix pair, as the cylinder will originally be aligned with the Z axis
+        // and will have to be rotated to align it along the Y axis
+        GL11.glPushMatrix();
+        {
+            GL11.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+            new Cylinder().draw(0.25f, 0.25f, 1.5f, 10, 10);
+        }
+        GL11.glPopMatrix();
+
+        // how shiny are the front faces of the leafy head of the tree (specular exponent)
+        float headFrontShininess  = 20.0f;
+        // specular reflection of the front faces of the head
+        float headFrontSpecular[] = {0.1f, 0.2f, 0.1f, 1.0f};
+        // diffuse reflection of the front faces of the head
+        float headFrontDiffuse[]  = {0.0f, 0.5f, 0.0f, 1.0f};
+        
+        // set the material properties for the head using OpenGL
+        GL11.glMaterialf(GL11.GL_FRONT, GL11.GL_SHININESS, headFrontShininess);
+        GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SPECULAR, FloatBuffer.wrap(headFrontSpecular));
+        GL11.glMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE, FloatBuffer.wrap(headFrontDiffuse));
+
+        // position and draw the leafy head using a sphere quadric object
+        GL11.glTranslatef(0.0f, 2.0f, 0.0f);
+        new Sphere().draw(0.8f, 10, 10);
+    }
+    GL11.glPopMatrix();
 }
+
+private void checkadvance()
+{
+	advance1 += gamespeed;advance2 += gamespeed;advance3 += gamespeed;advance4 += gamespeed;advance5 += gamespeed;advance6 += gamespeed;advance7 += gamespeed;advance8 += gamespeed;advance9 += gamespeed;advance10 += gamespeed;
+	   
+	
+	if (advance1 > 15)
+	{
+		advance1 = advance2+groundsize;
+	}
+	if (advance2 > 15)
+	{
+		advance2 = advance3+groundsize;
+	}
+	if (advance3 > 15)
+	{
+		advance3 = advance4+groundsize;
+	}
+	if (advance4 > 15)
+	{
+		advance4 = advance5+groundsize;
+	}
+	if (advance5 > 15)
+	{
+		advance5 = advance6+groundsize;
+	}
+	if (advance6 > 15)
+	{
+		advance6 = advance7+groundsize;
+	}
+	if (advance7 > 15)
+	{
+		advance7 = advance8+groundsize;
+	}
+	if (advance8 > 15)
+	{
+		advance8 = advance9+groundsize;
+	}
+	if (advance9 > 15)
+	{
+		advance9 = advance10+groundsize;
+	}
+	if (advance10 > 15)
+	{
+		advance10 = advance1+groundsize;
+	}
+}
+
 }
