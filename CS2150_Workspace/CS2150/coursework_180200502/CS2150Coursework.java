@@ -40,15 +40,18 @@ public class CS2150Coursework extends GraphicsLab
 	Random rnd = new Random(); 
 	private boolean flapup = true;
 	private float rotate;
-	private float groundsize = -50f;
+	private float groundsize = -47.05f;
 	private float advance1, advance2,advance3, advance4,advance5, advance6,advance7, advance8,advance9, advance10;
 	private float position = 0;
 	private float wingflap = 0;
     private Texture featherTexture;
     private Texture beakTexture;
     private float gamespeed=0.01f;
+    private int treeamount = 75;
     
     
+    private float[][] treesr;
+    private float[][] treesl;
     private Texture scaleTexture;
     ///stolen need to replace
     /** ids for nearest, linear and mipmapped textures for the ground plane */
@@ -61,7 +64,7 @@ public class CS2150Coursework extends GraphicsLab
 	
     //TODO: Feel free to change the window title and default animation scale here
     public static void main(String args[])
-    {   new CS2150Coursework().run(WINDOWED,"CS2150 Coursework Submission",0.01f);
+    {   new CS2150Coursework().run(WINDOWED,"CS2150 Coursework Submission",1f);
     }
 
     protected void initScene() throws Exception
@@ -101,6 +104,29 @@ public class CS2150Coursework extends GraphicsLab
         GL11.glEnable(GL11.GL_LIGHTING);
         // ensure that all normals are re-normalised after transformations automatically
         GL11.glEnable(GL11.GL_NORMALIZE);
+        
+        //define trees
+        //1=x,2-y,3=z,4=height,5=sphere width;
+        treesr = new float[treeamount][5];
+        treesl = new float[treeamount][5];
+        for (int x=0; x < treeamount; x++)
+        {
+        	//set a random x position at the edge of the river for the trees
+        	treesr[x][0]=15.0f+(rnd.nextFloat()*10);
+        	treesl[x][0]=-15.0f+(rnd.nextFloat()*-10);
+        	treesr[x][1]=-1f;
+        	treesl[x][1]=-1f;
+        	//set the trees to the correct z dimensions
+        	treesr[x][2]=-x*(250/treeamount);
+        	treesl[x][2]=-x*(250/treeamount);
+        	
+        	//set a random height
+        	treesr[x][3]=1+rnd.nextFloat();
+        	treesl[x][3]=1+rnd.nextFloat();
+        	//set sphere size
+        	treesr[x][4]=0.5f + rnd.nextFloat();
+        	treesl[x][4]=0.5f + rnd.nextFloat();
+        }
         
     }
     protected void checkSceneInput()
@@ -146,14 +172,27 @@ public class CS2150Coursework extends GraphicsLab
     	   
     	   if (flapup)
     	   {
-    	   wingflap += gamespeed;
+    	   wingflap += gamespeed*5;
     	   }
     	   else
     	   {
-    	   wingflap -= gamespeed;
+    	   wingflap -= gamespeed*5;
     	   }
     	   
-    	   
+    	   for (int x=0; x < treeamount; x++)
+           {
+    		treesl[x][2]+=gamespeed;   
+    		treesr[x][2]+=gamespeed;
+    		
+    		if (treesl[x][2]>=0)
+    		{
+    			treesl[x][2] += 10*groundsize;
+    		}
+    		if (treesr[x][2]>=0)
+    		{
+    			treesr[x][2] += 10*groundsize;
+    		}
+           }
     	   
     	   
     	   checkadvance();
@@ -161,7 +200,7 @@ public class CS2150Coursework extends GraphicsLab
     	   //fish movement
     	   
     	   fishz += gamespeed;
-    	   fishx += 2*gamespeed;
+    	   fishx += 1.5*gamespeed;
     	   
     	   fishacel -= 0.00005;
     	   fishy += fishacel;
@@ -202,6 +241,14 @@ GL11.glLoadIdentity();
     	 
     	 
     	drawFish();
+    	for (int x=0; x < treeamount; x++)
+        {
+    		if (treesl[x][2] > -76)
+    		{
+    	drawTree(treesl[x]);
+    	drawTree(treesr[x]);
+    		}
+        }
     }
     protected void setSceneCamera()
     {
@@ -710,10 +757,9 @@ GL11.glLoadIdentity();
             GL11.glBindTexture(GL11.GL_TEXTURE_2D,skyNightTextures.getTextureID());
             
             // position, scale and draw the back plane using its display list
-            GL11.glTranslatef(0.0f,4.0f,-75.0f);
+            GL11.glTranslatef(50.0f,10.0f,-75.0f);
             GL11.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-            GL11.glScalef(25.0f, 1.0f, 10.0f);
-            //GL11.glCallList(planeList);
+            GL11.glScalef(200.0f, 1.0f, 40.0f);
             
             Vertex v1 = new Vertex(-0.5f, -1.0f,-0.5f); // left,  back
             Vertex v2 = new Vertex( 0.5f, -1.0f,-0.5f); // right, back
@@ -1202,7 +1248,7 @@ GL11.glLoadIdentity();
          GL11.glPopMatrix();
     }
 
-private void drawTree()
+private void drawTree(float[] tree)
 {
 	// draw the tree
     GL11.glPushMatrix();
@@ -1220,7 +1266,9 @@ private void drawTree()
         GL11.glMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE, FloatBuffer.wrap(trunkFrontDiffuse));
 
         // position the tree
-        GL11.glTranslatef(0.0f, -1.0f, -12.0f);
+        GL11.glTranslatef(tree[0], tree[1], tree[2]);
+        
+        GL11.glScalef(2.0f, 2.0f, 2.0f);
         
         // draw the trunk using a cylinder quadric object. Surround the draw call with a
         // push/pop matrix pair, as the cylinder will originally be aligned with the Z axis
@@ -1228,7 +1276,7 @@ private void drawTree()
         GL11.glPushMatrix();
         {
             GL11.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-            new Cylinder().draw(0.25f, 0.25f, 1.5f, 10, 10);
+            new Cylinder().draw(0.25f, 0.25f, tree[3], 10, 10);
         }
         GL11.glPopMatrix();
 
@@ -1245,8 +1293,8 @@ private void drawTree()
         GL11.glMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE, FloatBuffer.wrap(headFrontDiffuse));
 
         // position and draw the leafy head using a sphere quadric object
-        GL11.glTranslatef(0.0f, 2.0f, 0.0f);
-        new Sphere().draw(0.8f, 10, 10);
+        GL11.glTranslatef(0.0f, tree[3]+0.2f, 0.0f);
+        new Sphere().draw(tree[4], 10, 10);
     }
     GL11.glPopMatrix();
 }
