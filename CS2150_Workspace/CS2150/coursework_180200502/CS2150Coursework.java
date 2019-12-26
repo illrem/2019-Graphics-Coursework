@@ -27,61 +27,68 @@ import java.util.*;
  * <p>Controls:
  * <ul>
  * <li>Press the escape key to exit the application.
- * <li>Hold the x, y and z keys to view the scene along the x, y and z axis, respectively
- * <li>While viewing the scene along the x, y or z axis, use the up and down cursor keys
- *      to increase or decrease the viewpoint's distance from the scene origin
+ * <li>press A to move the bird Left Press D to move the bird Right
  * </ul>
  * TODO: Add any additional controls for your sample to the list above
  *
  */
 public class CS2150Coursework extends GraphicsLab
 {
+	//variables for the current fish position
 	float fishx,fishy,fishz,fishacel;
+	//variable to create randoms
 	Random rnd = new Random(); 
+	//variable to control the direction the wings are moving
 	private boolean flapup = true;
-	private float rotate;
+	//size of the ground plane
 	private float groundsize = -47.05f;
+	//variables to move the ground towards the camera
 	private float advance1, advance2,advance3, advance4,advance5, advance6,advance7, advance8,advance9, advance10;
+	//position of the bird in the x direction
 	private float position = 0;
+	//angle of the wings
 	private float wingflap = 0;
-    private Texture featherTexture;
-    private Texture beakTexture;
+	
+    //standard speed for movement in the scene
     private float gamespeed=0.01f;
+    //number of trees per side
     private int treeamount = 75;
     
-    
+    //array of arrays that store tree positions
     private float[][] treesr;
     private float[][] treesl;
+    
+    
+    //textures for the scene
+    private Texture featherTexture;
+    private Texture beakTexture;
     private Texture scaleTexture;
-    ///stolen need to replace
-    /** ids for nearest, linear and mipmapped textures for the ground plane */
     private Texture groundTextures;
-    /** ids for nearest, linear and mipmapped textures for the daytime back (sky) plane */
-    //private Texture skyDayTextures;
-    /** ids for nearest, linear and mipmapped textures for the night time back (sky) plane */
-    private Texture skyNightTextures;
+    private Texture Horizon;
     
 	
-    //TODO: Feel free to change the window title and default animation scale here
+  	//window naming and gamespeed set
     public static void main(String args[])
     {   new CS2150Coursework().run(WINDOWED,"CS2150 Coursework Submission",1f);
     }
 
     protected void initScene() throws Exception
-    {//TODO: Initialise your resources here - might well call other methods you write.
-    	// global ambient light level
-    	
+    {
+    	//set the ground variables to put ground planes one after another
     	advance1 = 0; advance2 = advance1 + groundsize;advance3 = advance2 + groundsize; advance4 = advance3 + groundsize;advance5 = advance4 + groundsize; advance6 = advance5 + groundsize;advance7  = advance6 + groundsize; advance8  = advance7 + groundsize;advance9 = advance8 + groundsize; advance10 = advance9 + groundsize;
     	
+    	//set the coordinates of the fish
     	fishz = groundsize;
     	fishx=-5f; fishy = -3.5f;fishacel=0.03f;
     	
+    	//setup the textures
         featherTexture = loadTexture("coursework_180200502/textures/feathertex.bmp");
         beakTexture = loadTexture("coursework_180200502/textures/beaktex.bmp");
         groundTextures = loadTexture("coursework_180200502/textures/river.bmp");
         scaleTexture = loadTexture("coursework_180200502/textures/scales.bmp");
-        skyNightTextures = loadTexture("coursework_180200502/textures/nightSky.bmp");
+        Horizon = loadTexture("coursework_180200502/textures/nightSky.bmp");
 
+        //setup lighting conditions
         float globalAmbient[]   = {0.5f,  0.5f,  0.5f, 1.0f};
         // set the global ambient lighting
         GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT,FloatBuffer.wrap(globalAmbient));
@@ -92,7 +99,7 @@ public class CS2150Coursework extends GraphicsLab
         // ...and is positioned above the viewpoint
         float position0[] = { 0.0f, 10.0f, 0.0f, 1.0f};
 
-        // supply OpenGL with the properties for the first light
+        // supply OpenGL with the properties for the first light (using the same as lab6 as that seemed to work best)
         GL11.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, FloatBuffer.wrap(ambient0));
         GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, FloatBuffer.wrap(diffuse0));
         GL11.glLight(GL11.GL_LIGHT0, GL11.GL_SPECULAR, FloatBuffer.wrap(diffuse0));
@@ -114,8 +121,8 @@ public class CS2150Coursework extends GraphicsLab
         	//set a random x position at the edge of the river for the trees
         	treesr[x][0]=15.0f+(rnd.nextFloat()*10);
         	treesl[x][0]=-15.0f+(rnd.nextFloat()*-10);
-        	treesr[x][1]=-1f;
-        	treesl[x][1]=-1f;
+        	treesr[x][1]=-2f;
+        	treesl[x][1]=-2f;
         	//set the trees to the correct z dimensions
         	treesr[x][2]=-x*(250/treeamount);
         	treesl[x][2]=-x*(250/treeamount);
@@ -123,23 +130,14 @@ public class CS2150Coursework extends GraphicsLab
         	//set a random height
         	treesr[x][3]=1+rnd.nextFloat();
         	treesl[x][3]=1+rnd.nextFloat();
-        	//set sphere size
+        	//set random sphere size
         	treesr[x][4]=0.5f + rnd.nextFloat();
         	treesl[x][4]=0.5f + rnd.nextFloat();
         }
         
     }
     protected void checkSceneInput()
-    {//TODO: Check for keyboard and mouse input here
-    	/**
-    	if(Keyboard.isKeyDown(Keyboard.KEY_R))
-        {   rotate += 1f;
-        }
-    	else
-    	{
-    		rotate = 0;
-    	}
-    	**/
+    {
     	
     	//controls for the bird left to right
     	if(Keyboard.isKeyDown(Keyboard.KEY_A))
@@ -158,9 +156,9 @@ public class CS2150Coursework extends GraphicsLab
         //TODO: Update your scene variables here - remember to use the current animation scale value
         //        (obtained via a call to getAnimationScale()) in your modifications so that your animations
         //        can be made faster or slower depending on the machine you are working on
-    	   rotate += 0.01f;
+
     	   
-    	//wingflap 
+    	//wingflap make the wing flap up and down
     	   if (wingflap <= 0)
     	   {
     		   flapup = true;
@@ -172,7 +170,7 @@ public class CS2150Coursework extends GraphicsLab
     	   
     	   if (flapup)
     	   {
-    	   wingflap += gamespeed*5;
+    	   wingflap += gamespeed*10;
     	   }
     	   else
     	   {
@@ -194,17 +192,18 @@ public class CS2150Coursework extends GraphicsLab
     		}
            }
     	   
-    	   
+    	   //move the ground towards the camera and reset it to the end of the queue if it goes past the camera 
     	   checkadvance();
     	   
     	   //fish movement
-    	   
     	   fishz += gamespeed;
     	   fishx += 1.5*gamespeed;
     	   
+    	   //give the fish an arc'ed flight
     	   fishacel -= 0.00005;
     	   fishy += fishacel;
     	   
+    	   //set the fish to reappear at random intervals
     	   if (fishy < -3.5f + ((1+rnd.nextFloat())*-500))
     	   {
     	   fishz = groundsize;
@@ -214,18 +213,12 @@ public class CS2150Coursework extends GraphicsLab
     }
     protected void renderScene()
 
-    {//TODO: Render your scene here - remember that a scene graph will help you write this method! 
-     //      It will probably call a number of other methods you will write.
-    	
-GL11.glLoadIdentity();
-    	
-        // Position the camera outside the shape
-		GLU.gluLookAt(0, 10, 15,     /* Camera position */
-				      0,4,0,          /* Target */
-				      0, 1, 0         /* Up vector */ 
-				      );
+    {
     	
     	
+        
+    	
+    	//draw the ground planes
     	drawGround(advance1);
     	drawGround(advance2);
     	drawGround(advance3);
@@ -236,11 +229,15 @@ GL11.glLoadIdentity();
     	drawGround(advance8);
     	drawGround(advance9);
     	drawGround(advance10);
+    	//draw the horizon
     	drawBack();
-    	drawDuck();
-    	 
-    	 
+    	
+    	//draw the duck
+    	drawDuck();    	 
+    	//draw the fish 
     	drawFish();
+    	
+    	//draw the the trees that are in shot (only renders som trees to reduce lag)
     	for (int x=0; x < treeamount; x++)
         {
     		if (treesl[x][2] > -76)
@@ -256,8 +253,13 @@ GL11.glLoadIdentity();
         // and default camera settings ready for some custom camera positioning below...  
         super.setSceneCamera();
 
-        //TODO: If it is appropriate for your scene, modify the camera's position and orientation here
-        //        using a call to GL11.gluLookAt(...)
+
+GL11.glLoadIdentity();
+     // Position the camera above the bird
+     		GLU.gluLookAt(0, 10, 15,     /* Camera position */
+     				      0,4,0,          /* Target */
+     				      0, 1, 0         /* Up vector */ 
+     				      );
    }
 
     protected void cleanupScene()
@@ -268,20 +270,15 @@ GL11.glLoadIdentity();
     {
     	GL11.glPushMatrix();
         {
-        	// disable lighting calculations so that they don't affect
-            // the appearance of the texture 
+        	//(textures and lighting stuff mostly modified lab6)
             GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
             GL11.glDisable(GL11.GL_LIGHTING);
-            // change the geometry colour to white so that the texture
-            // is bright and details can be seen clearly
             Colour.WHITE.submit();
-        	// enable texturing and bind an appropriate texture
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D,beakTexture.getTextureID());           
 
           //rotate to the same direction as the viewer is watching from
             GL11.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
-            //GL11.glRotatef(rotate, 0.0f, 1.0f, 0.0f);
             
             //make the center of the bird the middle
             GL11.glTranslatef(position,2.5f,2.0f);
@@ -691,28 +688,23 @@ GL11.glLoadIdentity();
     {
     	GL11.glPushMatrix();
         {
-            // disable lighting calculations so that they don't affect
-            // the appearance of the texture 
+        	//textures and lighting (modified lab6)
             GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
             GL11.glDisable(GL11.GL_LIGHTING);
-            // change the geometry colour to white so that the texture
-            // is bright and details can be seen clearly
             Colour.WHITE.submit();
-            // enable texturing and bind an appropriate texture
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D,groundTextures.getTextureID());
             
-            // position, scale and draw the ground plane using its display list
+            // position, scale and draw the ground plane
             GL11.glTranslatef(10f,-1.0f,advance);
             GL11.glScalef(75.0f, 1.0f, 80.25f);
-            //GL11.glCallList(planeList);
             
             Vertex v1 = new Vertex(-0.5f, -1.0f,-0.5f); // left,  back
             Vertex v2 = new Vertex( 0.5f, -1.0f,-0.5f); // right, back
             Vertex v3 = new Vertex( 0.5f, -1.0f, 0.5f); // right, front
             Vertex v4 = new Vertex(-0.5f, -1.0f, 0.5f); // left,  front
             
-            // draw the plane geometry. order the vertices so that the plane faces up
+            // draw the ground
             GL11.glBegin(GL11.GL_POLYGON);
             {
                 new Normal(v4.toVector(),v3.toVector(),v2.toVector(),v1.toVector()).submit();
@@ -745,21 +737,17 @@ GL11.glLoadIdentity();
     	// draw the back plane
         GL11.glPushMatrix();
         {
-            // disable lighting calculations so that they don't affect
-            // the appearance of the texture 
+            // textures and lighting
             GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
             GL11.glDisable(GL11.GL_LIGHTING);
-            // change the geometry colour to white so that the texture
-            // is bright and details can be seen clearly
             Colour.WHITE.submit();
-            // enable texturing and bind an appropriate texture
             GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D,skyNightTextures.getTextureID());
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D,Horizon.getTextureID());
             
-            // position, scale and draw the back plane using its display list
+            // position, scale, rotate and draw the back plane
             GL11.glTranslatef(50.0f,10.0f,-75.0f);
             GL11.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-            GL11.glScalef(200.0f, 1.0f, 40.0f);
+            GL11.glScalef(200.0f, 1.0f, 50.0f);
             
             Vertex v1 = new Vertex(-0.5f, -1.0f,-0.5f); // left,  back
             Vertex v2 = new Vertex( 0.5f, -1.0f,-0.5f); // right, back
@@ -802,18 +790,17 @@ GL11.glLoadIdentity();
         	 //move fish to correct place
              GL11.glTranslatef(fishx,fishy,fishz);
         	 
-
-          // disable lighting calculations so that they don't affect
-             // the appearance of the texture 
+             //fish textures
              GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
              GL11.glDisable(GL11.GL_LIGHTING);
-             // change the geometry colour to white so that the texture
-             // is bright and details can be seen clearly
-             Colour.WHITE.submit();
-         	// enable texturing and bind an appropriate texture
+             
              GL11.glEnable(GL11.GL_TEXTURE_2D);
              GL11.glBindTexture(GL11.GL_TEXTURE_2D,scaleTexture.getTextureID());      
              
+             GL11.glMaterialf(GL11.GL_FRONT, GL11.GL_SHININESS, 50f);
+             
+             
+             //scale up the fish
              GL11.glScalef(5.0f, 5.0f, 5.0f);
              
          	//front vector
@@ -851,22 +838,7 @@ GL11.glLoadIdentity();
              Vertex b5 = new Vertex(-0.6f,-0.05f,-0.15f);  
              Vertex b6 = new Vertex(-0.6f,-0.05f, 0.15f);  
              
-             /**
-             // draw the top face:
-             GL11.glBegin(GL11.GL_POLYGON);
-             {
-                 new Normal(t1.toVector(),t2.toVector(),z1.toVector()).submit();
-                 
-                 f1.submit();
-                 t1.submit();                
-                 t2.submit();
-                 b1.submit();
-                 b2.submit();
-                 z2.submit();                
-                 z1.submit();
-             }
-             GL11.glEnd();
-             **/
+            
              
           // draw the tail:
              GL11.glBegin(GL11.GL_POLYGON);
@@ -1064,7 +1036,7 @@ GL11.glLoadIdentity();
              GL11.glEnd();
              
 
-             //side face of fins
+             //side faces of the fin
              GL11.glBegin(GL11.GL_POLYGON);
              {
                  new Normal(r1.toVector(),r3.toVector(),rf1.toVector()).submit();
@@ -1215,7 +1187,7 @@ GL11.glLoadIdentity();
              GL11.glEnd();
              
 
-             //side face of fins
+             //side faces of the fin
              GL11.glBegin(GL11.GL_POLYGON);
              {
                  new Normal(l1.toVector(),l3.toVector(),lf1.toVector()).submit();
@@ -1253,46 +1225,42 @@ private void drawTree(float[] tree)
 	// draw the tree
     GL11.glPushMatrix();
     {
-        // how shiny are the front faces of the trunk (specular exponent)
-        float trunkFrontShininess  = 20.0f;
-        // specular reflection of the front faces of the trunk
-        float trunkFrontSpecular[] = {0.2f, 0.2f, 0.1f, 1.0f};
-        // diffuse reflection of the front faces of the trunk
-        float trunkFrontDiffuse[]  = {0.38f, 0.29f, 0.07f, 1.0f};
         
-        // set the material properties for the trunk using OpenGL
+    	//set lighting properties
+        float trunkFrontShininess  = 15.0f;
+        float trunkFrontSpecular[] = {0.14f, 0.14f, 0.15f, 1.0f};
+        float trunkFrontDiffuse[]  = {0.4f, 0.3f, 0.1f, 1.0f};
+        
+        // set the material properties for the trunk
         GL11.glMaterialf(GL11.GL_FRONT, GL11.GL_SHININESS, trunkFrontShininess);
         GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SPECULAR, FloatBuffer.wrap(trunkFrontSpecular));
         GL11.glMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE, FloatBuffer.wrap(trunkFrontDiffuse));
 
         // position the tree
         GL11.glTranslatef(tree[0], tree[1], tree[2]);
-        
+        //scale the tree
         GL11.glScalef(2.0f, 2.0f, 2.0f);
         
-        // draw the trunk using a cylinder quadric object. Surround the draw call with a
-        // push/pop matrix pair, as the cylinder will originally be aligned with the Z axis
-        // and will have to be rotated to align it along the Y axis
+        
         GL11.glPushMatrix();
         {
+        	//rotate and draw the trunk
             GL11.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
             new Cylinder().draw(0.25f, 0.25f, tree[3], 10, 10);
         }
         GL11.glPopMatrix();
 
-        // how shiny are the front faces of the leafy head of the tree (specular exponent)
+        //set material properties for leaves (based on lab6 leaves)
         float headFrontShininess  = 20.0f;
-        // specular reflection of the front faces of the head
         float headFrontSpecular[] = {0.1f, 0.2f, 0.1f, 1.0f};
-        // diffuse reflection of the front faces of the head
         float headFrontDiffuse[]  = {0.0f, 0.5f, 0.0f, 1.0f};
         
-        // set the material properties for the head using OpenGL
+        // set the material properties for the leaves
         GL11.glMaterialf(GL11.GL_FRONT, GL11.GL_SHININESS, headFrontShininess);
-        GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SPECULAR, FloatBuffer.wrap(headFrontSpecular));
         GL11.glMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE, FloatBuffer.wrap(headFrontDiffuse));
+        GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SPECULAR, FloatBuffer.wrap(headFrontSpecular));
 
-        // position and draw the leafy head using a sphere quadric object
+        // position and draw the leaves
         GL11.glTranslatef(0.0f, tree[3]+0.2f, 0.0f);
         new Sphere().draw(tree[4], 10, 10);
     }
@@ -1301,9 +1269,10 @@ private void drawTree(float[] tree)
 
 private void checkadvance()
 {
+	//move the ground towards the camera
 	advance1 += gamespeed;advance2 += gamespeed;advance3 += gamespeed;advance4 += gamespeed;advance5 += gamespeed;advance6 += gamespeed;advance7 += gamespeed;advance8 += gamespeed;advance9 += gamespeed;advance10 += gamespeed;
 	   
-	
+	//move the ground to the back of the queue if it is behind the camera
 	if (advance1 > 15)
 	{
 		advance1 = advance2+groundsize;
