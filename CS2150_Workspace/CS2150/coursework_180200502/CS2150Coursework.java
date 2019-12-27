@@ -1,10 +1,44 @@
 /* CS2150Coursework.java
- * TODO: put your university username and full name here
+ * TODO: 180200502, Aderemi Ajidahun, second year computer science
+ * 		Unless stated otherwise this is my own work
  *
  * Scene Graph:
  *  Scene origin
  *  |
- *
+ *	*Bird
+ *		|
+ *		+-- [T(position,2.5f,2.0f)] Bird
+ *			+--[T(0,0,0)] cone (beak)
+ *			+--[T(0,0, -0.5f)] cylinder (head)
+ *			+--[T(0,0,0)] sphere (back of head)
+ *			+--[T(0,1.5f, 1.5f)] cylinder (neck)
+ *			+--[T(0,0,0)] sphere (front of body)
+ *			+--[T(0,0,0)] cylinder (body)
+ *			+--[T(0.4f,0.5f, 1.8f)] cylinder (left leg)
+ *			|	+--[T(0.0f,0.0f, 0.75f)] sphere (foot)
+ *			+--[T(-0.8f,0, 0)] cylinder (right leg)
+ *			|	+--[T(0.0f,0.0f, 0.75f)] sphere (foot)
+ *			+--[T(0.4f,-0.5f, -0.05f)] sphere (end of body)
+ *			+--[T(0,0,0)] cylinder (tail)
+ *			+--[T(0.7f,-0.7f, -0.7f)] custom (wing)
+ *			+--[T(0,0, 1.4f)] custom (wing)
+ *			+--[T(0,0,0)] cone (beak)
+ *			+--[T(0,0,0)] cone (beak)
+ *			+--[T(0,0,0)] cone (beak)
+ *			+--[T(0,0,0)] cone (beak)
+ *  *Ground
+ *  	|
+ *  	+--[T(0,-1,advance)]*13 plane (the ground)
+ *  *horizon
+ *  	|
+ *  	+--[T(45.0f,10.0f,-75.0f)] plane (the horizon)
+ *  *Fish
+ *  	|
+ *  	+--[S(5,5,5),T(fishx,fishy,fishz)]
+ *  *Tree
+ *  	|
+ *  	+--[T(treeX,treeY,treeZ)] Sphere (foliage)
+ *  	+--[T(0.0f, treeY+0.2f, 0.0f)] cylinder (trunk)
  *  TODO: Provide a scene graph for your submission
  */
 package coursework_180200502;
@@ -28,8 +62,8 @@ import java.util.*;
  * <ul>
  * <li>Press the escape key to exit the application.
  * <li>press A to move the bird Left Press D to move the bird Right
+ * <li>Use the arrow keys to rotate the camera about the center of the scene
  * </ul>
- * TODO: Add any additional controls for your sample to the list above
  *
  */
 public class CS2150Coursework extends GraphicsLab
@@ -57,6 +91,10 @@ public class CS2150Coursework extends GraphicsLab
     //array of arrays that store tree positions
     private float[][] treesr;
     private float[][] treesl;
+    
+    //camera coordinates
+    private float camerax;
+    private float cameray;
     
     
     //textures for the scene
@@ -135,6 +173,10 @@ public class CS2150Coursework extends GraphicsLab
         	treesl[x][4]=0.5f + rnd.nextFloat();
         }
         
+        //set camera starting coordinates
+        camerax = 0f;
+        cameray = 10f;
+        
     }
     protected void checkSceneInput()
     {
@@ -143,13 +185,31 @@ public class CS2150Coursework extends GraphicsLab
     	if(Keyboard.isKeyDown(Keyboard.KEY_A))
         {   
     		if (position <= 7.55)
-    		position += 0.01f;
+    		position += gamespeed;
         }
     	else if(Keyboard.isKeyDown(Keyboard.KEY_D))
         {   
     		if (position >= -7.55)
-    		position -= 0.01f;
+    		position -= gamespeed;
         }
+    	
+    	//move camera position within bounds using arrow keys
+    	if(Keyboard.isKeyDown(Keyboard.KEY_UP)&&(cameray<15f))
+    	{
+    		cameray+=gamespeed;
+    	}
+    	if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)&&(cameray>7.75f))
+    	{
+    		cameray-=gamespeed;
+    	}
+    	if(Keyboard.isKeyDown(Keyboard.KEY_LEFT)&&(camerax<1f))
+    	{
+    		camerax+=gamespeed;
+    	}
+    	if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)&&(camerax>-1f))
+    	{
+    		camerax-=gamespeed;
+    	}
     }
     protected void updateScene()
     {
@@ -256,7 +316,7 @@ public class CS2150Coursework extends GraphicsLab
 
 GL11.glLoadIdentity();
      // Position the camera above the bird
-     		GLU.gluLookAt(0, 10, 15,     /* Camera position */
+     		GLU.gluLookAt(camerax,cameray, 15,     /* Camera position */
      				      0,4,0,          /* Target */
      				      0, 1, 0         /* Up vector */ 
      				      );
@@ -745,9 +805,9 @@ GL11.glLoadIdentity();
             GL11.glBindTexture(GL11.GL_TEXTURE_2D,Horizon.getTextureID());
             
             // position, scale, rotate and draw the back plane
-            GL11.glTranslatef(50.0f,10.0f,-75.0f);
+            GL11.glTranslatef(45.0f,10.0f,-75.0f);
             GL11.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-            GL11.glScalef(200.0f, 1.0f, 50.0f);
+            GL11.glScalef(250.0f, 1.0f, 50.0f);
             
             Vertex v1 = new Vertex(-0.5f, -1.0f,-0.5f); // left,  back
             Vertex v2 = new Vertex( 0.5f, -1.0f,-0.5f); // right, back
