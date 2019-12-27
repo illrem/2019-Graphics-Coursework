@@ -1,5 +1,5 @@
 /* CS2150Coursework.java
- * TODO: 180200502, Aderemi Ajidahun, second year computer science
+ * 180200502, Aderemi Ajidahun, second year computer science
  * 		Unless stated otherwise this is my own work
  *
  * Scene Graph:
@@ -39,7 +39,6 @@
  *  	|
  *  	+--[T(treeX,treeY,treeZ)] Sphere (foliage)
  *  	+--[T(0.0f, treeY+0.2f, 0.0f)] cylinder (trunk)
- *  TODO: Provide a scene graph for your submission
  */
 package coursework_180200502;
 
@@ -56,8 +55,12 @@ import java.util.*;
 
 
 /**
- * TODO: Briefly describe your submission here
- *
+ * 
+ * Scene Description:
+ * A bird flies forward, flapping its wings, along a river towards the sunset.
+ * A fish jumps out of the river at random points and intervals
+ * There are trees that are generated to be unique, that are randomly scattered along the riverbank.
+ * 
  * <p>Controls:
  * <ul>
  * <li>Press the escape key to exit the application.
@@ -1280,7 +1283,7 @@ GL11.glLoadIdentity();
          GL11.glPopMatrix();
     }
 
-private void drawTree(float[] tree)
+    private void drawTree(float[] tree)
 {
 	// draw the tree
     GL11.glPushMatrix();
@@ -1327,7 +1330,7 @@ private void drawTree(float[] tree)
     GL11.glPopMatrix();
 }
 
-private void checkadvance()
+    private void checkadvance()
 {
 	//move the ground towards the camera
 	advance1 += gamespeed;advance2 += gamespeed;advance3 += gamespeed;advance4 += gamespeed;advance5 += gamespeed;advance6 += gamespeed;advance7 += gamespeed;advance8 += gamespeed;advance9 += gamespeed;advance10 += gamespeed;
